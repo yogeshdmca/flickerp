@@ -1,0 +1,67 @@
+{% load custom_user_tag %}
+
+<div class="ibox-content">
+    <form>
+        <div class="row">
+            <div class="form-group col-lg-3">
+                <div class="btn-group hierarchy-select" data-resize="auto" id="user-select">
+                    <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+                        <span class="selected-label pull-left">&nbsp;</span>
+                        <span class="caret"></span>
+                        <span class="sr-only">Toggle Dropdown</span>
+                    </button>
+                    <div class="dropdown-menu open">
+                        <div class="hs-searchbox">
+                            <input type="text" class="form-control" autocomplete="off">
+                        </div>
+                        <ul class="dropdown-menu inner" role="menu">
+
+                            <li data-value="{{ current_user.id }}" data-level="1" {% if params.user == current_user.id %} data-default-selected="true" {% endif %}>
+                                <a href="#">{{ current_user.full_name }}</a>
+                            </li>
+                            {% for tag in tags %}
+                            <li data-value="{{tag.id}}" data-level="{{tag.level}}" {% if params.user == tag.id %} data-default-selected="true" {% endif %}>
+                                <a href="#">{{tag.text}}</a>
+                            </li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                    <input class="hidden hidden-field" name="user" readonly="readonly" aria-hidden="true" type="text"/>
+                </div>
+            </div>
+            <div class="form-group col-lg-1">
+                <input type="text" placeholder="Start Date" class="form-control datePicker" name="start_date" value="{{params.start_date}}">
+            </div>
+            <div class="form-group col-sm-1">
+                <input type="text" placeholder="End Date" class="form-control datePicker" name="end_date" value="{{params.end_date}}">
+            </div>
+
+            <div class="form-group col-sm-1">
+                <select name="call_result" class="form-control">
+                    <option value="" {% if not params.call_result %} selected="true" {% endif %} >Select</option>
+                    {% for key,value in SCHEDULE_STATUS.items %}
+                        <option value="{{key}}" {% if params.call_result == key %} selected="true" {% endif %} >{{value}}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            
+            <div class="form-group col-sm-2">
+                <select name="country" class="form-control">
+                    <option value="" {% if not params.country %} selected="true"  {% endif %} >Select Country</option>
+                    {% for country in countries %}
+                        <option value="{{country.id}}" {% if params.country == country.id %} selected="true" {% endif %} >{{country.name}}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            
+            <div class="form-group col-sm-2">
+                <input type="text" name="q" class="form-control" placeholder="Search by text" value="{{params.q|default_if_none:''}}">
+            </div>
+
+
+            <div class="form-group col-lg-1">
+                <button type="submit" class="btn btn-primary center-block">Submit</button>
+            </div>
+        </div>
+    </form>
+</div>

@@ -1,0 +1,256 @@
+/* Modify bootstrap defined css */
+.row { margin-left: -10px; margin-right: -10px; }
+/* block end's */
+
+.value-set{
+    display: none;
+}
+
+li.active.open { color: #676a6c; }
+
+h1.logo-name {
+    font-size: 90px;
+    text-align: center;
+}
+
+.h-bg-label {background-color: #1ab394 !important; color: #fff; }
+
+.h-bg-label:hover {color: black;}
+
+.count-label { color: #19aa8d; }
+
+.notes_object_listing { word-break: break-word; vertical-align: top; }
+
+.reports_listing { width: 100% !important; }
+
+#prospects_list_wrapper { width: 99% };
+
+.online-label { color: green; }
+
+.offline-label { color: red; }
+
+.row.form-button { text-align: center; }
+
+.hide-csrf-token { display: none; } /* hide csrf token label */
+
+body {
+    font-family: "open sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+    background-color: #F3F3F4;
+    font-size: 14px;
+    color: #3a3535;
+    overflow-x: hidden;
+}
+
+/* campaign show view checkbox */
+@media (min-width: 767px) {
+    .checkbox-camp-show { position: absolute; margin-left: -10% !important; margin-top: 3% !important; }
+}
+/* block end's */
+
+/* call button css */
+/*i.custom-call { color: #19aa8d; font-size: large; cursor: pointer; vertical-align: baseline; }*/
+/*i.custom-hangup {color: red; font-size: large; cursor: pointer; vertical-align: baseline;}*/
+i.custom-call { margin-left: 5%; font-size: larger; color: #19aa8d; cursor: pointer; }
+i.custom-hangup { margin-left: 5%; font-size: larger; color: red; cursor: pointer; }
+span.call-status { margin-left: 2%; }
+/* block end's */
+
+.table.table-borderless > tbody > tr > th, .table.table-borderless > tbody > tr > td { border-top: none; }
+
+/* Capitalize all table columns value */
+table.campaign_listing > tbody > tr > td, table.object_listing > tbody > tr > td { text-transform: capitalize; }
+
+.website-text { text-transform: lowercase !important; }
+
+.form_editable_class.valign { vertical-align: -webkit-baseline-middle; }
+
+th { text-transform: capitalize; }
+
+div#container { margin-top: 3%; margin-bottom: 2%; }
+
+div.container { margin-top: 1%; }
+
+span.pros-span { padding-top: 5px; display: inline-block; }
+
+/* Set navbar brand logo */
+div.navbar-header > a > img { padding-top: 3%; }
+
+.footer {
+    position: fixed;
+}
+.navbar {
+    margin-bottom: 0;
+}
+.navbar-brand {
+    background: #1ab394;
+    color: #fff;
+    padding: 15px 25px;
+}
+.navbar-brand:focus, .navbar-brand:hover {
+    text-decoration: none;
+}
+.nav > li > a {
+    padding: 15px 20px;
+    color: #676a6c;
+    font-weight: 600;
+}
+
+.registration-form {
+	margin-bottom: 100px;
+}
+
+#boxmap {
+    position: relative;
+    width: 100%;
+    height: 300px;
+}
+ul.nav.navbar-nav.top-header {
+    /*margin: 0 0 0 -2px;*/
+    margin: 0 0 0 2px;  /* change margin to seprate first tab from brand logo */
+    float: left;
+    font-size: smaller;
+}
+/*.navbar-header {
+    margin-left: 30px;
+}*/
+#campaign-create-form {
+    margin: 0 0px 0px 350px;
+
+}
+
+#force{
+    margin: 10px;
+}
+
+/*Loder Css*/
+
+#loading {
+    background: #f4f4f2 url("img/page-bg.png") repeat scroll 0 0;
+    height: 100%;
+    left: 0;
+    margin: auto;
+    position: fixed;
+    top: 0;
+    width: 100%;
+}
+.bokeh {
+    border: 0.01em solid rgba(150, 150, 150, 0.1);
+    border-radius: 50%;
+    font-size: 100px;
+    height: 1em;
+    list-style: outside none none;
+    margin: 0 auto;
+    position: relative;
+    top: 35%;
+    width: 1em;
+    z-index: 2147483647;
+}
+.bokeh li {
+    border-radius: 50%;
+    height: 0.2em;
+    position: absolute;
+    width: 0.2em;
+}
+.bokeh li:nth-child(1) {
+    animation: 1.13s linear 0s normal none infinite running rota, 3.67s ease-in-out 0s alternate none infinite running opa;
+    background: #00c176 none repeat scroll 0 0;
+    left: 50%;
+    margin: 0 0 0 -0.1em;
+    top: 0;
+    transform-origin: 50% 250% 0;
+}
+.bokeh li:nth-child(2) {
+    animation: 1.86s linear 0s normal none infinite running rota, 4.29s ease-in-out 0s alternate none infinite running opa;
+    background: #ff003c none repeat scroll 0 0;
+    margin: -0.1em 0 0;
+    right: 0;
+    top: 50%;
+    transform-origin: -150% 50% 0;
+}
+.bokeh li:nth-child(3) {
+    animation: 1.45s linear 0s normal none infinite running rota, 5.12s ease-in-out 0s alternate none infinite running opa;
+    background: #fabe28 none repeat scroll 0 0;
+    bottom: 0;
+    left: 50%;
+    margin: 0 0 0 -0.1em;
+    transform-origin: 50% -150% 0;
+}
+.bokeh li:nth-child(4) {
+    animation: 1.72s linear 0s normal none infinite running rota, 5.25s ease-in-out 0s alternate none infinite running opa;
+    background: #88c100 none repeat scroll 0 0;
+    margin: -0.1em 0 0;
+    top: 50%;
+    transform-origin: 250% 50% 0;
+}
+@keyframes opa {
+12% {
+    opacity: 0.8;
+}
+19.5% {
+    opacity: 0.88;
+}
+37.2% {
+    opacity: 0.64;
+}
+40.5% {
+    opacity: 0.52;
+}
+52.7% {
+    opacity: 0.69;
+}
+60.2% {
+    opacity: 0.6;
+}
+66.6% {
+    opacity: 0.52;
+}
+70% {
+    opacity: 0.63;
+}
+79.9% {
+    opacity: 0.6;
+}
+84.2% {
+    opacity: 0.75;
+}
+91% {
+    opacity: 0.87;
+}
+}
+
+@keyframes rota {
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+}
+
+.table-striped>tbody>tr:nth-of-type(odd){ 
+    background-color: #1ab394 !important;
+    color: white!important; 
+}
+
+tr.out_time{ 
+    background-color: white!important;
+    color: black!important; 
+}
+
+tr.miss_punch{ 
+    background-color: #ed5565!important;
+    color: white!important; 
+}
+
+
+/*colore of Rows */
+
+
+table tr.row-green{
+    background-color: #3a7b51 !important;
+    color: white;
+}
+
+table tr.row-red{
+    background-color: #883149 !important;
+    color: white;
+}

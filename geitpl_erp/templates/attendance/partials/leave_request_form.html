@@ -1,0 +1,74 @@
+{% load widget_tweaks %}
+
+    <div class="modal-header">
+        <h3> Request For Leave</h3>
+    </div>
+    <div class="modal-body">
+        <form autocomplete="off" method="post" role="form" class="form-horizontal" id="request_for_leave">
+            {% csrf_token %}
+            <div class="row">
+
+                <div class="form-group date">
+                    <label class="col-lg-3 control-label">Date</label>
+                    <div class="col-lg-9">
+                        {{ form.date|add_class:"form-control"}}
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="col-lg-3 control-label">Full/Half</label>
+                    <div class="col-lg-9">
+                        {{ form.leave_count|add_class:"form-control"}}
+                    </div>
+                </div>
+
+
+                <div class="form-group">
+                    <label class="col-lg-3 control-label">Leave Category</label>
+                    <div class="col-lg-9">
+                        {{ form.category|add_class:"form-control"}}
+                    </div>
+                </div>
+
+
+                <div class="form-group description ">
+                    <label class="col-lg-3 control-label">Description </label>
+                    <div class="col-lg-9">
+                    {{ form.description|add_class:"form-control"|attr:"rows:5" }}
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+
+<div class="modal-footer">
+    <button type="button" class="btn btn-white" data-dismiss="modal">Close</button>
+    <button type="button" class="btn btn-primary" id="request_for_leave_btn">Add</button>
+</div>
+
+
+
+<script type="text/javascript">
+$("#id_date").datepicker({
+        startDate: new Date(),
+        autoclose: true,
+        clearBtn : true,
+        todayBtn : true,
+        todayHighlight : true,
+        daysOfWeekDisabled: '0'
+    })
+
+// $(document).on("change", "#id_leave_count", function(){
+//     var url = " url 'attendance:get_available_leave'"
+//     $.ajax({
+//         type:'GET',
+//         url: url,
+//         data: {'date': $("#id_date".val(),'leave_count':$(this).val())},
+//         success: function(responce){
+//             console.log(responce)
+//         }
+//     })
+// })
+
+
+</script>

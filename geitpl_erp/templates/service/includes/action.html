@@ -1,0 +1,13 @@
+
+{% if service.status == 'scheduled1' %}
+<td class="project-actions">
+    <a href="javascript:void(0)" class="btn btn-white btn-sm"><i class="fa fa-folder"></i> Start </a>
+</td>
+{% endif %}
+
+{% if service.status == 'open' %}
+<td class="project-actions">
+    <!-- <a href="javascript:void(0);" data-pk= "{{service.id}}" class="btn btn-white btn-sm allote-hours"><i class="fa fa-folder"></i> Details </a> -->
+    <a data-toggle="modal" href="{% url 'service:supervisor-schedule-allotment' service.id %}" data-target="#myModal"><i class="fa fa-clock-o"> Manage </i></a>
+</td>
+{% endif %}

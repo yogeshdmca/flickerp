@@ -1,0 +1,21 @@
+{% load widget_tweaks %}
+
+<div class="row">
+{% for field in form %}
+   <div class="col-md-6">
+        <div class="form-group {% if field.errors%} has-error {% endif %}">
+          <label class="control-label">{{ field.label }}</label>
+            {{field|add_class:"form-control"}}
+            {% if field.help_text%}
+              <span class="help-block"> {{field.help_text|safe}} </span>
+            {% endif %}
+        </div>
+    </div>
+   {% if forloop.last %}
+     </div>
+   {% else %}
+     {% if forloop.counter|divisibleby:"2" %}
+       </div><div class="row">
+     {% endif %}
+   {% endif %}
+{% endfor %}

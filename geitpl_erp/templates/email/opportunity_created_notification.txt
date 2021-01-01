@@ -1,0 +1,14 @@
+Hi,
+
+You have a new Opportunity, Below are the details.
+
+First Name - {{opportunity.firstname}}
+Last Name - {{opportunity.lastname}}
+Company Name - {{opportunity.company_name}}
+Skype - {{opportunity.skype}}
+Phone - {{opportunity.contact}}
+Email - {{opportunity.email}}
+Desciption - {{opportunity.description}}
+
+Thanks & Regards
+Golden Eagle It Technologies pvt. ltd.

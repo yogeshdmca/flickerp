@@ -1,0 +1,42 @@
+{% for assin in service_assined%}
+<tr>
+    <td class="desc">
+            <h3>
+            <a href="javascript:void(0);" class="text-navy">
+                {{assin.service.title}}
+            </a>
+            </h3>
+            <p class="small {% if assin.service.type == 'freetask' %}text-danger{% endif %}">
+                {{assin.service.get_type_display}}
+            </p>
+
+            <dl class="small m-b-none">
+                <dt> TL : {{assin.service.assigned_to.get_full_name }}</dt>
+                <dd>BD : {{assin.service.manager.get_full_name}}</dd>
+                <dd>Client:  {{assin.service.client}}</dd>
+            </dl>
+
+            <div class="m-t-sm">
+                <a href="javascript:void(0);" class="text-muted"><i class="fa fa-gift"></i> 30 days Left</a>
+                |
+                <a href="javascript:void(0);" class="text-muted"><i class="fa fa-clock-o"></i> Renew on : {{assin.service.end_date}}</a>
+            </div>
+        </td>
+    <td>
+        <a href="javascript:void(0);" class="text-navy">
+                {{assin.hours}}
+        </a>
+    </td>
+    <td>
+        <div class="input-group date">
+            <input type="hidden" name="service_id" value="{{assin.id}}">
+            <select name="service_value">
+                <option value="">0</option>
+                {% for val in "x"|ljust:assin.hours %}
+                    <option value="{{ forloop.counter }}">{{ forloop.counter }} Hours</option>
+                {% endfor %}
+            </select>
+        </div>
+    </td>
+</tr>
+{% endfor %}

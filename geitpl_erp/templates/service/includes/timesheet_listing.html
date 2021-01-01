@@ -1,0 +1,94 @@
+{% load staticfiles timesheet_tag %}
+{% load staticfiles custom_user_tag %}
+
+<div class="ibox-content text-center">
+    <div class="table-responsive timesheet">
+      {% get_holidays_list dates as holidays %}
+        <table class="table table-bordered table-striped">
+            <thead>
+              <tr>
+              <th colspan="2">Task/Heads</th>
+                {% for d in dates %}
+                  {% now "j" as current_date %}
+                  {% with  date=d|date:"j"%}
+                    <th style="{% if d in holidays %} background: rgba(0, 0, 0, 0.27);{% elif date == current_date %} background: rgba(255, 255, 0, 0.3); {% endif %}">
+                        {{date}}
+                        <small>{{d|date:"D"}}</small>
+                    </th>
+                    {% endwith %}
+                  {% endfor %}
+              </tr>
+            </thead>
+
+            <tbody>
+            <!-- start of Main Project time sheet filled  -->
+            <tr>
+              <th colspan="2">Project/Task</th>
+              {% for d in dates %}
+                {% if d in holidays %}
+                  <td style="background: rgba(0, 0, 0, 0.27);"></td>
+                {% else %}
+                  {% now "j" as current_date %}
+                  {% with  date=d|date:"j"%}
+                    {% get_timesheet_value d False user_id as value %}
+                      <td style="{% if date == current_date%} background: rgba(255, 255, 0, 0.3); {% endif %}">
+                      <a href="javascript:void(0)" title="Timesheet Assined" data-toggle="popover" data-placement="auto bottom" data-trigger="hover" data-content="{{value.title}}">
+                        {{value.hours|default_if_none:""}}
+                      </a>
+                      </td>
+                  {% endwith %}
+                {% endif %}
+                {% endfor %}
+            </tr>
+
+            <!-- End of Main Project time sheet filled  -->
+
+            <!-- Start of Other Type Of timesheet filled  -->
+
+            {% for type in types %}
+            <tr>
+              <th colspan="2">{{type.title}}</th>
+              {% for d in dates %}
+                {% if d in holidays %}
+                  <td style="background: rgba(0, 0, 0, 0.27);"></td>
+                {% else %}
+                  {% now "j" as current_date %}
+                  {% with  date=d|date:"j"%}
+                    {% get_timesheet_value d type.id user_id as value %}
+                      <td style="{% if date == current_date%} background: rgba(255, 255, 0, 0.3); {% endif %}">
+
+                        <a href="javascript:void(0)" title="{{value.type}}" data-toggle="popover" data-placement="auto bottom" data-trigger="hover" data-content="{{value.title}}">
+                      {{value.hours|default_if_none:""}}
+                      </a>
+
+                      </td>
+                  {% endwith %}
+                {% endif %}
+                {% endfor %}
+            </tr>
+            {% endfor  %}
+            <!-- End of Other Type Of timesheet filled  -->
+
+            <!-- start of Total timesheet filled  -->
+            <tr style="font-weight: bold;">
+              <th colspan="2">Total</th>
+              {% for d in dates %}
+                {% if d in holidays %}
+                  <td style="background: rgba(0, 0, 0, 0.27);;">H</td>
+                {% else %}
+                  {% now "j" as current_date %}
+                  {% with  date=d|date:"j"%}
+                    {% get_total_timesheet_value d user_id as value %}
+                      <td style="{% if date == current_date%} background: rgba(255, 255, 0, 0.3); {% endif %}"> {{value}}</td>
+                  {% endwith %}
+                {% endif %}
+                {% endfor %}
+            </tr>
+            <!-- End of Main Project time sheet filled  -->
+            </tbody>
+        </table>
+
+    </div>
+</div> 
+<p>*Only approved timesheet will counted as total timesheet.</p>
+<p>*New or Reject time will show in Red</p>

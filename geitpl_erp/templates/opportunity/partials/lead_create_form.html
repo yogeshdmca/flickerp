@@ -1,0 +1,57 @@
+{% load widget_tweaks %}
+<div class="row">
+    <form action="{% if request.user.department == '1' or request.user.is_admin %}{% url 'opportunity:lead-create' %}{% else %}{% url 'opportunity:sales-lead-create' %}{% endif %}" id="id_lead_create_form" method="POST" role="form" enctype="multipart/form-data" novalidate>
+        {% csrf_token %}
+        <input type="hidden" name="opportunity" value="{{ opportunity_id }}">
+        <div class="col-sm-6 b-r"><h3 class="m-t-none m-b">Client Information</h3>
+            <div class="form-group">
+                <label>Client</label>
+                {{ form.client|add_class:"form-control"}}{{ client_form.client.errors }}
+            </div>
+            <div id="id_client_detail">
+                <div class="form-group">
+                    <label>Client Name</label>
+                    {{ client_form.client_name|add_class:"form-control"|attr:"required:true" }}{{ client_form.client_name.errors }}
+                </div>
+                <div class="form-group">
+                    <label>Email Address</label>
+                    {{ client_form.email|add_class:"form-control"|attr:"required:true" }}{{ client_form.email.errors }}
+                </div>
+                <div class="form-group">
+                    <label>Phone Number</label>
+                    {{ client_form.phone_number|add_class:"form-control" }}{{ client_form.phone_number.errors }}
+                </div>
+                <div class="form-group">
+                    <label>Skype ID</label>
+                    {{ client_form.skype|add_class:"form-control" }}{{ client_form.skype.errors }}
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-6"><h3 class="m-t-none m-b">Other Information</h3>
+            <div class="form-group">
+                <label>Project Description</label>
+                {{ form.description|add_class:"form-control"|attr:"rows:5" }}{{ form.description.errors }}
+            </div> 
+            <div class="form-group">
+                <label>Estimated Price (in USD)</label>
+                {{ form.estimated_price|add_class:"form-control"}}{{ form.estimated_price.errors }}
+            </div>
+            <div class="form-group">
+                <label>Next Call Scheduled On</label>
+                {{ lead_scheduler_form.call_schedule|add_class:"form-control datetimePicker"}}{{ lead_scheduler_form.call_schedule.errors }}
+            </div>
+            <div class="form-group">
+                <label>Communication Type</label>
+                {{ lead_scheduler_form.communication_type|add_class:"form-control"}}{{ lead_scheduler_form.communication_type.errors }}
+            </div>
+            <div class="form-group">
+                <label>Attachments</label>
+                {{ attachment_form.document|attr:"multiple:true" }}
+            </div>
+        </div>
+        <div class="col-sm-12"><h3 class="m-t-none m-b">
+            <button type="submit" class="btn btn-primary">Submit</button>
+            <button type="reset" class="btn btn-danger">Reset</button>
+        </div>
+    </form>
+</div>

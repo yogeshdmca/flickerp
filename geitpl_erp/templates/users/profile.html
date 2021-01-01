@@ -1,0 +1,216 @@
+{% extends 'layout/layout.html' %}
+{% load staticfiles %}
+{% load i18n %}
+{% load widget_tweaks %}
+
+{% block title %}{% trans 'User Profile' %}{% endblock %}
+
+{% block content %}
+    <div class="wrapper wrapper-content animated fadeInRight">
+        <div class="row">
+        <!-- profile card -->
+            <div class="col-lg-3">
+                <div class="widget-head-color-box black-bg p-lg text-center">
+                    <div class="m-b-md">
+                        <h2 class="font-bold no-margins">
+                            {{ request.user.full_name }}
+                        </h2>
+                            <small>{{ request.user.get_designation_display }}</small>
+                    </div>
+                    {% if  request.user.profile_image %}
+                        <img  src="{{ request.user.profile_image.url }}" alt="Image not found" class="img-circle circle-border m-b-md" width="143" height="143">
+                    {% else %}
+                        <img  src="{% static 'img/user_default.png' %}" class="img-circle circle-border m-b-md" width="143" height="143">
+                    {% endif %}
+                </div>
+                <div class="widget-text-box">
+
+                    <h4 class="media-heading">Date of Joining</h4>
+                    <p>{{ request.user.date_of_joining }}</p>
+                    <h4 class="media-heading">Next Increment</h4>
+                    <p>{{ request.user.date_of_next_increment }}</p>
+                    <h4 class="media-heading">Bond Till</h4>
+                    <p>{{ request.user.bond_till }}</p>
+                    <h4 class="media-heading">Notice Period</h4>
+                    <p>{{ request.user.notice_period }}</p>
+                    <h4 class="media-heading">Leave Bank</h4>
+                    <p>{{ user.leave_bank }}</p>
+
+                    <h4 class="media-heading">Bank Account Number</h4>
+                    <p>{{ user.get_account_number }}</p>
+
+                </div>
+            </div>
+            <!-- Block End's -->
+
+            <!-- Information Block -->
+            <div class="col-lg-9">
+                <div class="widget-head-color-box ">
+                        <div class="ibox-title">
+                           <h3>Basic Details</h3>
+                        </div>
+                    <div class="ibox-content">
+                        <div class="row">
+                            <div class="form-group col-lg-6">
+                                <label class="col-sm-6 control-label">Employe ID</label>
+                                <div class="col-sm-6">{{ request.user.employee_id }}</div>
+                            </div>
+                            <div class="form-group col-lg-6">
+                                <label class="col-sm-6 control-label">Official Email</label>
+                                <div class="col-sm-6">{{ request.user.email }}</div>
+                            </div>
+                            <div class="form-group col-lg-6">
+                                <label class="col-sm-6 control-label">Skype ID</label>
+                                <div class="col-sm-6">{{ request.user.skype }}</div>
+                            </div>
+                            <div class="form-group col-lg-6">
+                                <label class="col-sm-6 control-label">Phone Number</label>
+                                <div class="col-sm-6">{{ request.user.phone_number }}</div>
+                            </div>
+                            <div class="form-group col-lg-6">
+                                <label class="col-sm-6 control-label">Department</label>
+                                <div class="col-sm-6">{{ request.user.get_department_display }}</div>
+                            </div>
+                            <div class="form-group col-lg-6">
+                                <label class="col-sm-6 control-label">Skills</label>
+                                <div class="col-sm-6">{% for skill in request.user.skills.all %}{{ skill }}, {% endfor %}</div>
+                            </div>
+                            <div class="form-group col-lg-6">
+                                <label class="col-sm-6 control-label">Date of Birth</label>
+                                <div class="col-sm-6">{{ request.user.date_of_birth }}</div>
+                            </div>
+                            <div class="form-group col-lg-6">
+                                <label class="col-sm-6 control-label">Personal Email</label>
+                                <div class="col-sm-6">{{ request.user.personal_email }}</div>
+                            </div>
+                            <div class="form-group col-lg-6">
+                                <label class="col-sm-6 control-label">Personal Phone Number</label>
+                                <div class="col-sm-6">{{ request.user.alternate_phone_number }}</div>
+                            </div>
+                            <div class="form-group col-lg-6">
+                                <label class="col-sm-6 control-label">State</label>
+                                <div class="col-sm-6">{{ request.user.state }}</div>
+                            </div>
+                            <div class="form-group col-lg-6">
+                                <label class="col-sm-6 control-label">City</label>
+                                <div class="col-sm-6">{{ request.user.city }}</div>
+                            </div>
+                            <div class="form-group col-lg-6">
+                                <label class="col-sm-6 control-label">Address</label>
+                                <div class="col-sm-6">{{ request.user.address }}</div>
+                            </div>
+                            <div class="form-group col-lg-6">
+                                <label class="col-sm-6 control-label">Pin Code</label>
+                                <div class="col-sm-6">{{ request.user.pin_code }}</div>
+                            </div>
+                        </div><br/>
+                        <!-- Family member -->
+                        {% if family %}
+                        <h3>Family Details</h3><hr/>
+                        {% for member in family %}
+                            <div class="row">
+                                <div class="form-group col-lg-6">
+                                    <label class="col-sm-6 control-label">Member Name</label>
+                                    <div class="col-sm-6">{{ member.full_name }}</div>
+                                </div>
+                                <div class="form-group col-lg-6">
+                                    <label class="col-sm-6 control-label">Relation with employe</label>
+                                    <div class="col-sm-6">{{ member.relation_with_employee }}</div>
+                                </div>
+                                <div class="form-group col-lg-6">
+                                    <label class="col-sm-6 control-label">Contact Number</label>
+                                    <div class="col-sm-6">{{ member.contact_number }}</div>
+                                </div>
+                            </div>
+                        {% endfor %}
+                        <!-- End Family block -->
+                        {%endif%}
+                    </div>
+                </div>
+            </div>
+            <!-- Block End's -->
+
+            <div class="col-lg-9">
+                <div class="ibox-title">
+                  <h3>Last 3 Month Salary slip <a data-toggle="modal" data-target="#ask_for_password" href="javascript:void(0)" class="text-info" id="show-salary">click me to show</a></h3>
+                </div>
+
+                <div class="ibox-content" id="append_salary_here">
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+<div id="ask_for_password" role="dialog" class="modal"  aria-hidden="true" >
+<div class="modal-dialog modal-sm">
+<div class="modal-content animated bounceInRight">
+    <div class="modal-header">
+        <h3>Enter Your Password for show salary Details</h3>
+    </div>
+
+<div class="modal-body">
+    <form method="post" role="form" class="form-horizontal">
+
+    {% csrf_token %}
+    <div class="row">
+        <div class="form-group">
+            <label class="col-lg-3 control-label">Password</label>
+            <div class="col-lg-9">
+                <input type="password" name="confirm_password">
+
+            </div>
+        </div>
+    </div>
+    </form>
+</div>
+
+<div class="modal-footer">
+    <div class="col-lg-6">
+    <span>Need to submit form by mouse click </span>
+    </div>
+    <div class="col-lg-6">
+    <button type="button" class="btn btn-white" data-dismiss="modal">Close</button>
+    <button type="button" class="btn btn-primary" id="confirm_show_salary">Open</button>
+    </div>
+</div>
+
+</div>
+</div>
+</div>
+
+
+{% endblock %}
+
+
+{% block script %}
+    {{ block.super }}
+
+<script type="text/javascript">
+    
+$('body').on('hidden.bs.modal', '.modal', function () {
+    $(this).removeData('bs.modal');
+});
+
+
+$(document).on("click", "#confirm_show_salary", function(){
+    var form = $("#ask_for_password form")
+    var for_data = form.serialize()
+    var url = "{% url 'user:show_salary_password_confirm'%}"
+    $.ajax({
+        type:'POST',
+        url: url,
+        data: for_data,
+        success: function(res){
+            if (res.error == '1'){
+                alert(res.msg)
+            }else{
+                $("#append_salary_here").html(res)
+                $('#ask_for_password').modal('hide');
+            }
+        
+        }
+    })
+})
+</script>
+{% endblock %}

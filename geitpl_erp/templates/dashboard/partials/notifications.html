@@ -1,0 +1,11 @@
+{% if notifications %}
+    {% for notification in notifications %}
+    <div class="well-notification">
+        <strong>{{notification.title}}</strong>
+        <p>{{notification.description}}</p>
+    </div>
+    {% endfor %}
+{% endif %}
+
+
+

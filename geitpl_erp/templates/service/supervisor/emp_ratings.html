@@ -1,0 +1,161 @@
+{% extends 'layout/layout.html' %}
+{% load staticfiles custom_tags timesheet_tag %}
+
+
+{% block content %}
+    <div class="wrapper wrapper-content animated fadeInRight">
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="ibox float-e-margins">
+                    <div class="ibox-title">
+                        <h5>Employee Ratings</h5>
+                        <div class="ibox-tools">
+                            <a class="collapse-link">
+                                <i class="fa fa-chevron-up"></i>
+                            </a>
+                        </div>
+                    </div>
+
+                    <div class="ibox-content">
+                        <div class="table-responsive">
+                            <table style="width:100%;" class="table object_listing table-bordered" >
+                                <thead>
+                                    <tr>
+                                        <th>User</th>
+                                        <th>Positive ponits</th>
+                                        <th>Negative points</th>
+                                        <th>Suggestion(visible to employee)</th>
+                                        <th>Rating(1 to 10)</th>
+                                        <th>Add/Edit</th>
+                                        <th>Details</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for new_feedback in new_feedbacks %}
+                                         <tr>
+                                            <td>
+                                                {{new_feedback.user.full_name}} <br/>
+                                                <small>avarage Rating <strong>{{ new_feedback.user.get_avarage_ratings }}</strong></small>
+                                            </td>
+                                            <td>{% if new_feedback.positive %}{{ new_feedback.positive }} {% endif %}</td>
+                                            <td>{% if new_feedback.negative %} {{ new_feedback.negative }} {% endif %} </td>
+
+                                            <td>{% if new_feedback.suggestion %} {{ new_feedback.suggestion }} {% endif %}</td>
+
+                                            <td>{% if new_feedback.rating %} {{ new_feedback.rating }} {% endif %}</td>
+
+                                            <td><a href="{% url 'user:employee-rating-new' pk=new_feedback.pk %}" data-attendance_id="{{ new_feedback.id }}" data-target="#ratingform" data-toggle="modal"><i class="fa fa-pencil" aria-hidden="true"></i></a></td>
+
+                                            <td><a data-url="" data-attendance_id="{{ new_feedback.id }}" class="view_attendance"><i class="fa fa-eye" aria-hidden="true"></i></a></td>
+                                        </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="ibox float-e-margins">
+                    <div class="ibox-title">
+                        <h5>Team Ratings</h5>
+                        <div class="ibox-tools">
+                            <a class="collapse-link">
+                                <i class="fa fa-chevron-up"></i>
+                            </a>
+                        </div>
+                    </div>
+
+                    <div class="ibox-content">
+                        <div class="table-responsive">
+                            <table style="width:100%;" class="table object_listing table-bordered" >
+                                <thead>
+                                    <tr>
+                                        <th>User</th>
+                                        <th>Positive ponits</th>
+                                        <th>Negative points</th>
+                                        <th>Suggestion(visible to employee)</th>
+                                        <th>Rating(1 to 10)</th>
+                                        <th>Avarage Ratings</th>
+                                        <th>Details</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    
+                                    {% for ruser in user.get_all_childs_only %}
+                                        {% if ruser.get_last_rating %}
+                                         <tr>
+                                            <td>{{ruser.full_name}}</td>
+                                            <td>{% if ruser.rating_positive %}{{ ruser.rating_positive }} {% endif %}</td>
+                                            <td>{% if ruser.rating_negative %} {{ ruser.rating_negative }} {% endif %} </td>
+
+                                            <td>{% if ruser.rating_suggestion %} {{ ruser.rating_suggestion }} {% endif %}</td>
+
+                                            <td>{% if ruser.rating_rating %} {{ ruser.rating_rating }} {% endif %}</td>
+
+                                            <td>{{ ruser.get_avarage_ratings }}</td>
+
+                                            <td><a data-url="" data-attendance_id="{{ new_feedback.id }}" class="view_attendance"><i class="fa fa-eye" aria-hidden="true"></i></a></td>
+                                        </tr>
+                                        {% endif %}
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+
+
+
+
+
+    <div id="ratingform" class="modal fade"  aria-hidden="true" >
+        <div class="modal-dialog modal-sm">
+            <div class="modal-content animated bounceInRight">
+                <div class="modal-body">
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}
+
+
+{% block js%} 
+
+<script type="text/javascript">
+$('body').on('hidden.bs.modal', '.modal', function () {
+    $(this).removeData('bs.modal');
+});
+
+
+$(document).on("click","#save-rating", function(){
+    form = $("#save-rating-form")
+    var url = form.attr('action')
+    $.ajax({
+           type: "POST",
+           url: url,
+           data: form.serialize(),
+           success: function(data)
+           {
+              if (data.status=='saved'){
+                location.reload()
+              }else{
+                alert(data.msg)
+              }
+           }
+         });
+
+})
+
+</script>
+{% endblock js%}

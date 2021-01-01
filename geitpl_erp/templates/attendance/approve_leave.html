@@ -1,0 +1,172 @@
+{% extends 'layout/layout.html' %}
+{% load staticfiles %}
+{% load i18n %}
+{% load widget_tweaks %}
+
+{% block title %}
+{% trans 'Approve Leave' %}
+{% endblock %}
+
+{% block content %}
+<div class="wrapper wrapper-content animated fadeInRight">
+<div class="row">
+<div class="col-lg-12">
+    <div class="ibox float-e-margins">
+        <div class="ibox-title">
+            <h5>Approve Leave</h5>
+            <div class="ibox-tools">
+                <a class="collapse-link">
+                    <i class="fa fa-chevron-up"></i>
+                </a>
+            </div>
+        </div>
+<!--         <div class="ibox-content">
+            <div class="row">
+                <form id="month-select">
+                    <div class="col-md-6">
+                        <select class="form-control" name="month" id="month">
+                            {% for month in month_dict %}
+                                <option value="{{ month.id }}">{{month.month_name}}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="col-md-5">
+                        <select class="form-control" name="year" id="year">
+                            {% for year in year_dict %}
+                                <option value="{{ year.id }}">{{ year.year }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="col-md-1">
+                        <input id="submit_button" type="button" class="btn btn-primary" value="submit">
+                        
+                    </div>
+                </form>
+            </div>
+        </div> -->
+        <div class="ibox-content">
+            <div class="table-responsive">
+                <table style="width:100%;" class="table users_object_listing table-striped table-bordered table-hover" >
+                    <thead>
+                        <tr>
+                            <th>Date</th>
+                            <th>Employee Name</th>
+                            <th>Category</th>
+                            <th>Type</th>
+                            <th>Description</th>
+                            <th>Status</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for object in object_list %}
+                            <tr>
+                                <td style="width:15%;">{{ object.date }}</td>
+                                <td style="width:10%;"> {{ object.user.full_name }}</td>
+                                <td style="width:5%;">{{ object.category.get_type_display }}</td>
+                                <td style="width:5%;">{{ object.get_leave_count_display }}</td>
+                                <td style="width:40%;">{{ object.description }}</td>
+                                <td style="width:10%;" class="text-{{ object.get_status_color}}">
+                                    {{object.get_status_display}}
+                                </td>
+
+                                <td style="width:15%;">
+                                {% if object.status == 1%}
+                                    <a data-url="{% url 'attendance:get-leave' %}"  data-leave_id="{{ object.id }}" name="supervisor_approval" class="show_leave">Aprove now</a>
+                                {% endif %}
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                    <tfoot>
+                        <tr>
+                            <th>Employee Name</th>
+                            <th>Date</th>
+                            <th>Type</th>
+                            <th>Description</th>
+                            <th>Leave for</th>
+                            <th>Status</th>
+                        </tr>
+                    </tfoot>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+</div>
+</div>
+<!-- Modal -->
+<div id="leave-show-modal" class="modal fade"  aria-hidden="true" >
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content animated bounceInRight">
+            <div class="modal-body">
+
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+{% block script %}
+{{ block.super }}
+
+<script type="text/javascript">
+var leaveReason = {
+    success:leaveApproveReason
+}
+function leaveApproveReason(responseText, statusText, xhr, $form){
+    location.reload();
+}
+    $(function(){
+        $('.show_leave').click(function(e){
+            e.preventDefault();
+            url = $(this).data('url');
+            leave_id = $(this).data('leave_id');
+            $.get(url, {'leave_id':leave_id}, function(response){
+                $('#leave-show-modal .modal-body').html($.parseHTML(response));
+                $('#leave-show-modal').modal();
+                $('#id_leave_cancel_block').hide();
+                $('#id_leave_status_form').ajaxForm(leaveReason);
+            });
+        });
+        
+        $(document).on('change', '#id_leave_status', function(){
+            var value = $(this).find(":selected").val();
+            if(value == '1'){
+                    $('#id_leave_cancel_block').hide();
+                    }
+                else if(value == '2'){
+                    $('#id_leave_cancel_block').show();
+                }
+        });
+        
+    });
+</script>
+<script type="text/javascript">
+
+    $( "input#submit_button" ).click(function() {
+            $("#month-select").submit()
+    })
+
+    function getSearchParams(k){
+         var p={};
+         location.search.replace(/[?&]+([^=&]+)=([^&]*)/gi,function(s,k,v){p[k]=v})
+         return k?p[k]:p;
+    }
+    
+    var month = getSearchParams('month')
+    if (month){
+        $("select#month").val(month)
+    }else{
+        $("select#month").val({{month}})
+    }
+
+    var year = getSearchParams('year')
+    if (year){
+        $("select#year").val(year)
+    }else{
+        $("select#year").val({{year}})
+    }
+</script>
+
+{% endblock %}

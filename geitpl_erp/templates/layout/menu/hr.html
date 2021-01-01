@@ -1,0 +1,68 @@
+
+<li>
+    <a aria-expanded="false" role="button" href="#" class="dropdown-toggle" data-toggle="dropdown">Users&nbsp;<span class="caret"></span></a>
+    <ul class="dropdown-menu">
+        <li>
+            <a href="{% url 'user:humanresource-user-create' %}">New User</a>
+        </li>
+        <li>
+            <a href="{% url 'user:hr-users' %}">User List</a>
+        </li>
+        <li>
+            <a href="{% url 'support:employee-portfolio-list' %}">Portfolio</a>
+        </li>
+        
+    </ul>
+</li>
+
+<li>
+    <a aria-expanded="false" role="button" href="#" class="dropdown-toggle" data-toggle="dropdown">Employee&nbsp;<span class="caret"></span></a>
+    <ul class="dropdown-menu">
+        <li>
+            <a href="{% url 'user:profile' %}">My Profile</a>
+        </li> 
+        <li>
+            <a href="{% url 'attendance:hr-attendance-list' %}">Attendance</a>
+        </li>
+        <li>
+            <a href="{% url 'attendance:hr-leave' %}">My Leaves</a>
+        </li>
+        <li>
+            <a href="{% url 'attendance:hr-holiday-list' %}">Holidays</a>
+        </li>
+        <li>
+            <a href="{% url 'attendance:humanresource-approve-leave' %}">Approve Leave</a>
+        </li>
+
+
+        
+    </ul>
+</li>
+<li>
+    <a aria-expanded="false" role="button" href="#" class="dropdown-toggle" data-toggle="dropdown">HR&nbsp;<span class="caret"></span></a>
+    <ul class="dropdown-menu">
+
+        <li>
+            <a href="{% url 'contract:hr-create-contract' %}">Create contract</a>
+        </li>
+
+        <li>
+            <a href="{% url 'contract:hr-show-contract' %}">Show contracts</a>
+        </li>
+
+        <li>
+            <a href="{% url 'attendance:humanresource-monthly-attendance' %}">Monthly Attendance</a>
+        </li>
+        <li>
+            <a href="{% url 'attendance:humanresource-leave-bank' %}">Leave Bank</a>
+        </li>
+        <li>
+            <a href="{% url 'attendance:humanresource-attendance-upload' %}">Upload Attendance</a>
+        </li>
+
+        <li>
+            <a href="{% url 'attendance:humanresource-shift-list-create' %}">Shift Config</a>
+        </li>
+
+    </ul>
+</li>

@@ -1,0 +1,87 @@
+{% extends 'layout/layout.html' %}
+{% load staticfiles %}
+{% load i18n %}
+{% load custom_user_tag %}
+
+
+{% block title %}
+    {% trans 'Contract List' %}
+{% endblock %}
+
+{% block content %}
+<div class="wrapper wrapper-content animated fadeInRight">
+<div class="row">
+<div class="col-lg-12">
+    <div class="ibox float-e-margins">
+        <div class="ibox-title">
+            <h5>Contract</h5>
+            <div class="ibox-tools">
+                <a class="collapse-link">
+                    <i class="fa fa-chevron-up"></i>
+                </a>
+            </div>
+        </div>
+        {% if request.user.is_admin or request.user.department == '1' %}
+        <div class="ibox-content">
+            <form>
+                <div class="row">
+                    <div class="form-group col-lg-5">
+                        {% active_user_select %}
+                    </div>
+                    <div class="form-group col-lg-5">
+                        <input type="text" placeholder="Expiry Date" class="form-control datePicker" name="expiry_date">
+                    </div>
+                    <div class="form-group col-lg-2">
+                        <button type="submit" class="btn btn-primary center-block">Submit</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+        {% endif %}
+        <div class="ibox-content">
+            <div class="table-responsive">
+                <table style="width:100%;" class="table object_listing table-bordered" >
+                    <thead>
+                        <tr>
+                            <th>Employe Name</th>
+                            <th>Designation</th>
+                            <th>Next Increemnt</th>
+                            <th>Basic Salary</th>
+                            <th>Home Allowance</th>
+                            <th>DA</th>
+                            <th>Deduction</th>
+                            <th>Total</th>
+                            <th>Net Salary</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for object in object_list %}
+                            <tr class="{{object.is_increment_color}}">
+                                <td>{{ object.user.full_name }}</td>
+                                <td>{{ object.user.get_designation_display}}</td>
+                                <td>{{object.expiry_date|date:"M Y"}}</td>
+                                <td>{{ object.basic }}</td>
+                                <td>{{ object.hra }}</td>
+                                <td>{{ object.da }}</td>
+                                <td>{{ object.basic_deduction }}</td>
+                                <td>{{ object.total }}</td>
+                                <td>{{ object.total_salary }}</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        
+    </div>
+</div>
+</div>
+</div>
+{% endblock %}
+{% block script %}
+    {{ block.super }}
+     <link href="{% static 'css/plugins/hierarchy-select/hierarchy-select.min.css' %}" rel="stylesheet">
+     <script src="{% static 'js/hierarchy-select/hierarchy-select.min.js' %}"></script>
+
+    <script src="{% static 'js/contract/contract_list.js' %}"></script>
+{% endblock %}

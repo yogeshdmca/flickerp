@@ -1,0 +1,100 @@
+{% load widget_tweaks %}
+<div class="row">
+    <div class="col-sm-6 b-r"><h3 class="m-t-none m-b">Contact Information</h3>
+        <div class="form-group col-sm-6">
+            <label>Full Name</label>
+            <p>{{ object.full_name }}</p>
+        </div>
+        <div class="form-group col-sm-6">
+            <label>Email</label>
+            <p>{{ object.email }}</p>
+        </div>
+        <div class="form-group col-sm-6">
+            <label>Phone Number</label>
+            <p>{{ object.phone_number }}</p>
+        </div>
+        <div class="form-group col-sm-6">
+            <label>Skype ID</label>
+            <p>{{ object.skype }}</p>
+        </div>       
+    </div>
+    <div class="col-sm-6 b-r"><h3 class="m-t-none m-b">Official Information</h3>
+        <div class="row">
+            <div class="form-group col-sm-6">
+                <label>Department</label>
+                <p>{{ object.department }}</p>
+            </div>
+            <div class="form-group col-sm-6">
+                <label>Skills</label>
+                <p>{% for skill in object.skills.all %}{{ skill }}, {% endfor %}</p>
+            </div>
+        </div>
+        <div class="row">
+            <div class="form-group col-sm-6">
+                <label>Supervisor</label>
+                <p>{{ object.parent }}</p>
+            </div>
+            <div class="form-group col-sm-6">
+                <label>Employee ID</label>
+                <p>{{ object.employee_id }}</p>
+            </div>
+        </div>
+        <div class="row">
+            <div class="form-group col-sm-6">
+                <label>Date of Joining</label>
+                <p>{{ object.date_of_joining }}</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-sm-6 b-r"><h3 class="m-t-none m-b">Other Information</h3>
+        <div class="form-group col-sm-6">
+            <label>Alternate Phone Number</label>
+            <p>{{ object.alternate_phone_number }}</p>
+        </div> 
+        <div class="form-group col-sm-6">
+            <label>Personal Email</label>
+            <p>{{ object.personal_email }}</p>
+        </div>
+    </div>
+
+    <div class="col-sm-6 b-r"><h3 class="m-t-none m-b">Address Information</h3>
+        <div class="row">
+            <div class="form-group col-sm-6">
+                <label>Address</label>
+                <p>{{ object.address }}</p>
+            </div>
+            <div class="form-group col-sm-6">
+                <label>City</label>
+                <p>{{ object.city }}</p>
+            </div> 
+        </div>
+        <div class="row">
+            <div class="form-group col-sm-6">
+                <label>State</label>
+                <p>{{ object.state }}</p>
+            </div>
+            <div class="form-group col-sm-6">
+                <label>Pin Code</label>
+                <p>{{ object.pin_code }}</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-sm-6 b-r"><h3 class="m-t-none m-b">Family Members</h3>
+        {% for member in object.family_members.all %}
+        <div class="row">
+            <div class="form-group col-sm-4">
+                <label>Name</label>
+                <p>{{ member.full_name }}</p>
+            </div>
+            <div class="form-group col-sm-4">
+                <label>Relation</label>
+                <p>{{ member.get_relation_with_employee_display }}</p>
+            </div> 
+            <div class="form-group col-sm-4">
+                <label>Contact No.</label>
+                <p>{{ member.contact_number }}</p>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>

@@ -1,0 +1,116 @@
+{% extends 'layout/layout.html' %}
+{% load staticfiles %}
+{% load i18n %}
+
+{% block title %}
+    {% trans 'View Lead' %}
+{% endblock %}
+
+{% block content %}
+    <div class="wrapper wrapper-content animated fadeInRight">
+        <!-- User Basic Profile Information -->
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="ibox float-e-margins">
+                    <div class="ibox-title">
+                        <h5>Contact Information</h5>
+                    </div>
+                    <div class="ibox-content">
+                        <div class="table-responsive">
+                            <table class="table table-borderless">
+                                <tbody>
+                                    <tr>
+                                        <th>Client's Name</th>
+                                        <td>{{ object.client_name }}</td>
+                                        <th>Email</th>
+                                        <td>{{ object.email }}</td>
+                                    </tr>
+                                    <tr>
+                                        <th>Phone Number</th>
+                                        <td>{{ object.phone_number }}</td>
+                                        <th>Skype</th>
+                                        <td>{{ object.skype }}</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Block End's -->
+
+        <!-- Opportunity Additional Profile Information -->
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="ibox float-e-margins">
+                    <div class="ibox-title">
+                        <h5>Additional Information</h5>
+                    </div>
+                    <div class="ibox-content">
+                        <div class="table-responsive">
+                            <table class="table table-borderless">
+                                <tbody>
+                                   <tr>
+                                        <th>Description</th>
+                                        <td>{{ user.description }}</td>
+                                        <th>Estimated Price</th>
+                                        <td>{{ object.estimated_price }}</td>
+                                    </tr>
+                                    <tr>
+                                        <th>Created By</th>
+                                        <td>{{ object.created_by }}</td>
+                                        <th>Modified By</th>
+                                        <td>{{ object.modified_by }}</td>
+                                    </tr>
+                                    <tr>
+                                        <th>Created At</th>
+                                        <td>{{ object.created_at }}</td>
+                                        <th>Modified At</th>
+                                        <td>{{ object.modified_at }}</td>
+                                    </tr>
+                                    <tr>
+                                        <th>Status</th>
+                                        <td>{{ object.status }}</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Block End's -->
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="ibox float-e-margins">
+                    <div class="ibox-title">
+                        <h5>Attachments</h5>
+                        <div class="ibox-tools">
+                            <a class="collapse-link">
+                                <i class="fa fa-chevron-up"></i>
+                            </a>
+                        </div>
+                    </div>
+                    <div class="ibox-content">
+                        <div class="table-responsive">
+                            <table class="table-borderless">
+                                <tbody>
+                                    <tr>
+                                    {% for attachment in attachments %}
+                                        <th>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="{{ attachment.document.url }}" class="fa {{ attachment.class_for_attachment }} fa-3x" download></a></th>
+                                        <td>
+                                            <h4>&nbsp;&nbsp;{{ attachment.document.name }}</h4>
+                                            &nbsp;&nbsp;&nbsp;&nbsp;<a href="{{ attachment.document.url }}" download>Download</a>
+                                        </td>
+                                    {% endfor %}        
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

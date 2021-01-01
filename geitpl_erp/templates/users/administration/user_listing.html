@@ -1,0 +1,87 @@
+{% extends 'layout/layout.html' %}
+{% load staticfiles %}
+
+{% block content %}
+<div class="row">
+<div class="col-lg-12">
+<div class="wrapper wrapper-content animated fadeInUp">
+
+    <div class="ibox">
+        <div class="ibox-title">
+            <h5>Employee Listing</h5>
+        </div>
+        <div class="ibox-content">
+            <div class="project-list">
+                <table class="table table-hover">
+                    <tbody>
+                    {% for user in object_list %}
+
+                    <tr>
+                        <td class="user-people">
+                            {% if user.profile_image %}
+                            
+                            <img alt="image" class="img-circle" src="{{user.get_thumbnail}}">
+                            {% else %}
+                            <img alt="image" class="img-circle" src="{% static 'img/user_default.png' %}">
+                            {% endif %}
+                        </td>
+
+
+                        <td class="project-title">
+                            <a href="javascript:valid(0)">{{ user.get_full_name|title }}</a>
+                            <br/>
+                            <small>TL: {{ user.parent.get_full_name|title }}</small>
+                            <br/>
+                            <small>Email: {{ user.email }}</small>
+                        </td>
+
+                        <td class="project-completion">
+                                <small>Department: <span class="label label-primary"> {{ user.get_department_display }} </span></small>
+                                <br/><br/>
+                                <small>Designation: <span class="label label-primary"> {{user.get_designation_display}}</span></small>
+                        </td>
+
+                        <td class="project-status">
+                            <small>EXP:  <span class="label label-primary">
+                            
+                                {{ user.date_of_joining|timesince }}
+                                
+                            </span> </small>
+                            <br/><br/>
+                            <small>DOJ:  <span class="label label-primary">{{ user.date_of_joining|date:"F Y" }}</span> </small>
+                        </td>
+
+                        {% if user in request.user.get_all_childs_under_me  %}
+
+                        <td class="project-title">
+                            <small>Mobile: {{ user.phone_number}}</small>
+                            <br/>
+                            <small>Leave Bank: {{ user.leave_bank }}</small>
+                        </td>
+
+                        {% endif %}
+                        
+                        {% if request.user.department != '2' and request.user.department != '3' or request.user.is_admin  %}
+                                                
+                        <td class="project-actions">
+                            <a data-user_id="{{ user.id }}" href="{% url 'user:admin-login_as_other' user.email %}" class="btn btn-white btn-sm"><i class="fa fa-pencil"></i> Add Family Member </a>
+                        </td>
+                        {% endif %}
+                    </tr>
+
+                    {% endfor %}
+                    </tbody>
+
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+</div>
+</div>
+{% endblock %}
+
+{% block script %}
+    {{ block.super }}
+    <script src="{% static 'js/users/user_list.js' %}"></script>
+{% endblock %}

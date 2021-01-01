@@ -1,0 +1,129 @@
+{% extends 'layout/layout.html' %}
+{% load staticfiles %}
+{% load i18n %}
+{% load widget_tweaks %}
+{% load custom_user_tag %}
+{% load prospect_tags %}
+{% block title %}
+    {% trans 'Opportunity List' %}
+{% endblock %}
+
+
+{% block CSS %}
+<style>
+    textarea { height: 45px !important;}
+</style>
+{% endblock %}
+
+
+
+{% block content %}
+<div class="wrapper wrapper-content animated fadeInRight">
+<div class="row">
+<div class="col-lg-12">
+<div class="ibox float-e-margins">
+    <div class="ibox-title">
+        <h5>Total Records : {{ page_obj.paginator.count }}</h5>
+
+        <div class="ibox-tools">
+            <a data-toggle="modal" href="{% url 'opportunity:sales-opportunity-create' %}" class="btn btn-primary" data-target="#opportunity-modelpopup">
+                New Opportunity</a>
+            <a class="collapse-link">
+                <i class="fa fa-chevron-up"></i>
+            </a>
+        </div>
+    </div>
+    {% prospect_filters %}
+    <div class="ibox-content">
+        <div class="table-responsive">
+            {% if is_paginated %}
+                  <ul class="pagination">
+                    {% if page_obj.has_previous %}
+                      <li><a href="?{% url_replace request 'page' page_obj.previous_page_number %}">&laquo;</a></li>
+                    {% else %}
+                      <li class="disabled"><span>&laquo;</span></li>
+                    {% endif %}
+                    {% for i in paginator.page_range %}
+                      {% if page_obj.number == i %}
+                        <li class="active"><span>{{ i }} <span class="sr-only">(current)</span></span></li>
+                      {% else %}
+                        <li><a href="?{% url_replace request 'page' i %}">{{ i }}</a></li>
+                      {% endif %}
+                    {% endfor %}
+                    {% if page_obj.has_next %}
+                      <li><a href="?{% url_replace request 'page' page_obj.next_page_number %}">&raquo;</a></li>
+                    {% else %}
+                      <li class="disabled"><span>&raquo;</span></li>
+                    {% endif %}
+                  </ul>
+            {% endif %}
+
+            <table style="width:100%;" class="table object_listing table-striped table-bordered table-hover" >
+                <thead>
+                    <tr>
+                        <th>View</th>
+                        <th>Client Name</th>
+                        <th>Email</th>
+                        <th>Phone Number</th>
+                        <th>Status</th>
+                        <th>Next Call Scheculed On</th>
+                        <th>Meeting Type</th>
+                        <th>Assined To</th>
+                        <th>Edit</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for object in object_list %}
+                        <tr style="color: {{object.get_color}}" >
+                            <td><a class="show-opportunity" href="{% url 'opportunity:sales-opportunity-show' object.pk %}" data-toggle="modal" data-target="#opportunity-modelpopup">{{object.created_at|date:'d M, Y'}}</a></td>
+                            <td>{{ object.firstname|title }}</td>
+                            <td style="max-width: 200px;word-break: break-word;">
+                                {{ object.email|default_if_none:"" }}
+                            </td>
+                            <td>{{ object.contact|default_if_none:"" }}</td>
+                            <td>{{ object.get_status_display }}</td>
+                            <td>
+                                <a data-backdrop="static" data-keyboard="false" href="{% url 'opportunity:prospect-call-result-new' object.pk %}" data-toggle="modal" data-target="#opportunity-modelpopup">{{ object.latest_schedule.call_schedule|date:'d M, y, H: i' }}</a>
+
+                                
+                            </td>
+                            <td>{{ object.latest_schedule.get_communication_type_display }}</td>
+
+                            <td>{{ object.user|default_if_none:"" }}</td>
+                            <td>
+
+                                <a data-backdrop="static" data-keyboard="false" href="{% url 'opportunity:sales-opportunity-update' object.pk %}" data-toggle="modal" data-target="#opportunity-modelpopup">Update</a></td>
+                            </td>
+
+
+                            <!--<td><button type="button" class="btn btn-primary show-lead-form" data-url="{% url 'opportunity:ajax-get-opportunity' %}" data-opportunity_id="{{ object.id }}" >Create Lead</button></td>-->
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+    
+</div>
+</div>
+</div>
+</div>
+
+<!-- Modal -->
+<div id="opportunity-modelpopup" class="modal fade" >
+    <div class="modal-dialog modal-md">
+        <div class="modal-content">
+            <div class="modal-body">
+                <!-- prospect-call-result-new data will show here  -->
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+{% block script %}
+    {{ block.super }}
+    <link href="{% static 'css/plugins/hierarchy-select/hierarchy-select.min.css' %}" rel="stylesheet">
+    <script src="{% static 'js/hierarchy-select/hierarchy-select.min.js' %}"></script>
+    <script src="{% static 'js/opportunity/opportunity_list.js' %}"></script>
+{% endblock %}

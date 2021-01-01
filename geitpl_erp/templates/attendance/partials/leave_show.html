@@ -1,0 +1,44 @@
+{% load widget_tweaks %}
+<div class="ibox-content">
+    <div class="table-responsive">
+        <table style="width:100%;" class="table user_obj_listing table-striped table-bordered table-hover" >
+            <tbody>
+                {% for user_leave_obj in user_leave_objs %}
+                    <tr>
+                        <td>{{ user_leave_obj.date }}</td>
+                        <td>{{ user_leave_obj.category.get_type_display }}</td>
+                        <td>{{ user_leave_obj.get_status_display }}
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+<div class="row">
+    <form id="id_leave_status_form" action="{% url 'attendance:update-leave' %}" method="POST" role="form">
+        {% csrf_token %}
+        <input type="hidden" value="{{ leave_obj.id }}" name="leave_id">
+        <h3>Approval/Rejection</h3><hr>
+        
+        <div class="col-sm-4">
+            <div class="form-group" id="id_leave_status">
+                <select class="form-control" required name="status">
+                    <option value=''>---------</option>
+                    {% if leave_obj.status == 1%}
+                        <option value='2'>Approved</option>
+                    {% elif leave_obj.status == 2 %}
+                        <option value='3'>Approved</option>
+                    {% endif %}
+                    <option value='4'>Reject</option>
+                    <option value='5'>Reject with A2</option>
+                    <option value='6'>Reject with A3</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="col-sm-4">
+            <button type="submit" class="btn btn-primary">Submit</button>
+        </div>
+    </form>
+</div>

@@ -1,0 +1,186 @@
+<div class="modal-body">
+<div class="ibox">
+	<div class="ibox-title red-bg">
+		Update Service
+	</div>
+	<div class="ibox-content">
+        <div class="row">
+            <div class="form-group col-lg-6">
+                <label class="col-sm-6 control-label">Change TL</label>
+                <div class="col-sm-6">
+                	<div class="col-sm-6">{{ object.client.email }}</div>
+            	</div>
+            </div>
+            <div class="form-group col-lg-6">
+                <label class="col-sm-6 control-label">Expire Date</label>
+                 <a href="javascript:void(0)" id="end_date" data-type="combodate" data-pk="{{object.id}}" data-url="{% url 'service:supervisor-service_edit-x-editor' %}" data-title="Select date" data-value="{{object.end_date|date:'Y-m-d'}}"></a>
+                </div>
+            
+
+            <div class="form-group col-lg-6">
+                <label class="col-sm-6 control-label">Status</label>
+                <a href="javascript:void(0)" id="status" data-type="select" data-pk="{{object.id}}" data-value="{{object.status}}" data-url="{% url 'service:supervisor-service_edit-x-editor' %}" data-title="Select Status"></a>
+            </div>
+            <div class="form-group col-lg-6">
+                <label class="col-sm-6 control-label">Total Hours Alooted</label>
+                <div class="col-sm-6">{{ object.get_available_hours }}</div>
+            </div>
+          </div>
+        </div><br/>
+	</div>
+</div>
+
+
+
+<div class="ibox">
+	<div class="ibox-title">
+		Renew History of service {{object}}
+	</div>
+	<div class="ibox-content">
+		<table class="table">
+			<thead>
+				<tr>
+					<td>Start Date</td>
+					<td>End Date</td>
+					<td>Hours</td>
+					<td>Tagline</td>
+				</tr>
+			</thead>
+			<tbody>
+				{% for record in object.records.all %}
+					<tr>
+					<td>
+						{{record.start_date}}
+					</td>
+					<td>
+						{{record.end_date}}
+					</td>
+					<td>
+						{{record.get_hours_details}}
+					</td>
+
+					<td>
+						{{record.title}}
+					</td>
+					</tr>
+				{% endfor%}
+				
+			</tbody>
+		</table>
+	</div>
+</div>
+
+<div class="ibox">
+	<div class="ibox-title">
+		Time sheet History (Assigned Task Work)
+	</div>
+	<div class="ibox-content">
+		<table class="table">
+			<thead>
+				<tr>
+					<td>Start Date</td>
+					<td>End Date</td>
+					<td>User</td>
+					<td>Hours</td>
+				</tr>
+			</thead>
+			<tbody>
+				{% for record in object.get_assined_hours_filled_by_users %}
+					<tr>
+					<td>
+						{{object.start_date}}
+					</td>
+					<td>
+						{{object.end_date}}
+					</td>
+					<td>
+						{{record.employee__full_name}}
+					</td>
+
+					<td>
+						{{record.hours_sum}}
+					</td>
+					</tr>
+				{% endfor%}
+				
+			</tbody>
+		</table>
+	</div>
+</div>
+
+<div class="ibox">
+	<div class="ibox-title red-bg">
+		Time sheet History (NON Assigned Task Work)
+	</div>
+	<div class="ibox-content">
+		<table class="table">
+			<thead>
+				<tr>
+					<td>Name</td>
+					<td>Hours</td>
+					<td>Category</td>
+				</tr>
+			</thead>
+			<tbody>
+				{% for record in object.get_unassined_hours_filled_by_users %}
+					<tr>
+					<td>
+						{{record.employee__full_name}}
+					</td>
+					<td>
+						{{record.hours_sum}}
+					</td>
+
+					<td>
+						{{record.category__title}}
+					</td>
+					</tr>
+				{% endfor%}
+				
+			</tbody>
+		</table>
+	</div>
+</div>
+
+</div>
+
+<div class="modal-footer">
+    <button type="button" class="btn btn-white" data-dismiss="modal">Close</button>
+</div>
+
+
+<script type="text/javascript">
+
+
+$('#status').editable({
+        source: [
+        		{% if object.status == 'open' %}
+              		{value: 'pause', text: 'Pause'},
+              		{value: 'done', text: 'Complte'},
+              	{% elif object.status == 'scheduled' %}
+              		{value: 'open', text: 'Start'},
+              	{% else %}
+              		{value: 'done', text: 'Complte'},
+              	{% endif %}
+           ],
+       	success: function(response, newValue){
+        	if(response.status == 'error'){return response.msg;}
+        	else{  location.reload() }
+        	}
+    });
+
+
+	$('#end_date').editable({
+        format: 'YYYY-MM-DD',    
+        viewformat: 'DD/MM/YYYY',    
+        template: 'DD / MMMM / YYYY',    
+        combodate: {
+                minYear: 2017,
+                maxYear: 2020
+            },
+
+        success: function(response, newValue){
+        	if(response.status == 'error') return response.msg;
+        	}
+    	})
+</script>

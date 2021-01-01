@@ -1,0 +1,39 @@
+{% if services %}
+
+<div class="ibox">
+<div class="ibox-title">
+    <h5>Weekly schedule</h5>
+</div>
+<div class="ibox-content">
+<div class="table-responsive">
+<table class="table table-hover table-bordered table-striped">
+    <thead>
+    <tr>
+        <th>Service</th>
+        {% for dd in date_list %}
+            <th>{{dd|date:"D d"}}</th>
+        {% endfor %}
+    </tr>
+        
+    </thead>
+    <tbody>
+    {% for service in services %}
+        <tr>
+            <td class="manage-project-title">
+                <a href="#">{{service.title}}</a>
+                <small>{{service.get_type_display}}</small>
+            </td>
+            {% for allot in service.schedules %}
+                <td >
+                    <span>{% if allot %}{{allot}} Hrs {% endif %} </span>
+                </td>
+            {% endfor %}
+        </tr>
+    {% endfor %}
+
+    </tbody>
+</table>
+</div>
+</div>
+</div>
+{% endif %}

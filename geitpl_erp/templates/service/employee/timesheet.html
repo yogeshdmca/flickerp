@@ -1,0 +1,217 @@
+{% extends 'layout/layout.html' %}
+{% load staticfiles timesheet_tag %}
+{% load staticfiles custom_user_tag %}
+
+{% block content %}
+
+
+
+    <div class="search-form">
+      <form id="timesheet-user-wise" action="." method="GET">
+        <div class="input-group">
+        {% user_hierarchy_select %}
+        </div>
+      </form>
+    </div>
+
+    <a class="btn btn-lg btn-warning pull-right" data-toggle="modal" href="{% url 'service:employee-fill-timesheet' %}" data-target="#filltimesheet">Add Timesheet</a>
+
+{% with  user_timesheet.get_time_sheet_performance as time_sheet_performance %}
+
+<div class="row">
+  <div class="col-lg-12">
+  <div class="ibox float-e-margins">
+  <div class="ibox-title">
+        <h2>You Worked/Engages <span class="text-navy"> {{time_sheet_performance.total_percentage|floatformat:2}}%</span> in {% now "F o" %} </h2>
+  </div>
+
+<div id="tabs">
+    <ul class="nav nav-tabs" id="timesheet">
+        <li class="active"><a href="#timesheet-by-me" data-toggle="tab">TimeSheet</a></li>
+        <li><a href="#added_by_other" data-toggle="tab">Added By Other</a></li>
+        <li><a href="#report" data-toggle="tab">Report</a></li>
+        <li><a href="#tl_approve_timehseet" data-toggle="tab">TimeSheet Aproval</a></li>
+        
+    </ul>
+    <div class="tab-content">
+        <div id="timesheet-by-me" class="tab-pane fade in  active">
+            {% include 'service/includes/timesheet_listing.html' %}   
+        </div>
+        <div id="report" class="tab-pane fade">
+            {% include 'service/includes/timesheet_work_performance.html' with time_sheet_performance=time_sheet_performance.records %}
+        </div>
+        <div id="added_by_other" class="tab-pane fade">
+          {% include 'service/includes/timesheet_listing_by_other.html'%}
+        </div>
+
+
+        <div id="tl_approve_timehseet" class="tab-pane fade">
+          {% tl_approve_timehseet user %}
+          </div>
+
+      </div>
+    </div>
+</div>
+
+
+  </div>
+</div>
+</div>
+
+{% endwith %}
+<!-- Model For Fill timesheet -->
+
+<div class="modal inmodal" id="filltimesheet" tabindex="-1" role="dialog" aria-hidden="true">
+<div class="modal-dialog">
+<div class="modal-content animated bounceInRight">
+
+</div>
+</div>
+</div>
+
+
+{% endblock %}
+
+{% block js%}
+<link href="{% static 'css/plugins/hierarchy-select/hierarchy-select.min.css' %}" rel="stylesheet">
+<script src="{% static 'js/hierarchy-select/hierarchy-select.min.js' %}"></script>
+
+<!-- Need to write Js -->
+
+<script type="text/javascript">
+
+$("a[href='#"+"{{request.GET.action}}"+"']").click()
+
+
+$('#user-select').hierarchySelect({
+    width: "400"
+});
+
+
+$('body').on('hidden.bs.modal', '.modal', function () {
+$(this).removeData('bs.modal');
+});
+
+
+$(document).on("change", "#user-select", function(){
+$("#timesheet-user-wise").submit();
+})
+
+
+$(document).on("click","#timesheet_save", function(){
+
+  var form = $("#form-fill-timesheet")
+  $.ajax({
+    type: "POST",
+    url: form.attr('action'),
+    data: form.serialize(),
+    success: function(res){
+      if (res.added == 'true'){
+          $('#filltimesheet').modal('hide'); 
+          location.reload(true)
+      }else{
+          alert(res.error)
+      }
+      
+    }
+  });
+
+})
+
+$(document).on("click", "button.btn.btn-white.delete", function(event){
+event.preventDefault()
+var tr = $(this).parents('tr');
+var timesheet_id = $(this).parents('tr').data('pk');
+
+$.ajax({
+  type: "GET",
+  url: "{% url 'service:delete_timesheet_task_record'%}",
+  data: {'timesheet_id':timesheet_id},
+  success: function(res){
+    if (res.deleted == 'true'){
+        tr.remove()
+    }else{
+        alert("this can not deleted , please check records carefully ")
+    }
+  }
+});
+
+})
+
+
+$(document).on("click", "button.btn.btn-white.delete-added", function(event){
+  event.preventDefault()
+  $(this).parents('tr').remove()
+})
+
+
+
+
+</script>
+
+
+<script type="text/javascript">
+  
+
+  $(document).on("change", ".timesheet_type", function(){
+    var elm = $(this);
+    timesheetType(elm);
+
+  })
+
+
+  $(document).on("change", ".timesheet_category", function(){
+    var elm = $(this);
+    timesheetCategory(elm);
+  })
+
+
+
+$(document).on("click", "#add-new-timesheet-row", function(event){
+  event.preventDefault();
+    $.ajax({
+      type: "GET",
+      url: "{% url 'service:add_new_timesheet_record'%}",
+      data: {},
+      success: function(responce){
+        $('#time-sheet-records-body').append(responce)
+      }
+    });
+
+})
+</script>
+
+
+<script type="text/javascript">
+  
+
+  timesheetType = function(elm){
+    $.ajax({
+      type: "GET",
+      url: "{% url 'service:get_timesheet_category_type'%}",
+      data: {'timesheet_type':elm.val()},
+      success: function(responce){
+        elm.parent().next().find('select').html(responce)
+      }
+    });
+
+  }
+
+
+  timesheetCategory  = function(elm){
+    $.ajax({
+      type: "GET",
+      url: "{% url 'service:get_timesheet_sub_category_type'%}",
+      data: {'timesheet_category':elm.val()},
+      success: function(responce){
+        elm.parents('td').next().html(responce)
+      }
+    });
+
+  }
+
+</script>
+
+
+
+{% endblock %}

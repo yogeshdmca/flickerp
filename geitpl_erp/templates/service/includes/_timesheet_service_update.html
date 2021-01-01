@@ -1,0 +1,44 @@
+{% for timesheeet_record in timesheet_todays%}
+<tr>
+    <td class="desc">
+            <h3>
+            <a href="#" class="text-navy">
+                {{timesheeet_record.service.title}}
+            </a>
+            </h3>
+            <p class="small">
+                <i class="fa fa-usd"></i> {{timesheeet_record.service.get_type_display}}
+            </p>
+
+            <dl class="small m-b-none">
+
+                <dt> TL : {{timesheeet_record.service.assigned_to.get_full_name }}</dt>
+                <dd>BD : {{timesheeet_record.service.manager.get_full_name}}</dd>
+                <dd>Client:  {{timesheeet_record.service.client}}</dd>
+            </dl>
+
+            <div class="m-t-sm">
+                <a href="javascript:void(0);" class="text-muted"><i class="fa fa-clock-o"></i>{{timesheeet_record.service.get_available_hours}} days Left</a>
+                |
+                <a href="javascript:void(0);" class="text-muted"><i class="fa fa-clock"></i> Renew on : {{timesheeet_record.service.end_date}}</a>
+            </div>
+        </td>
+    <td>
+        
+        <a href="#" class="text-navy">
+                {{timesheeet_record.get_assined_hours}}
+        </a>
+    </td>
+
+    <td>
+        <div class="input-group date">
+            <input type="hidden" name="service_id" value="{{timesheeet_record.get_schedule_allotment.id}}">
+            <select name="service_value">
+                {% for val in "x"|ljust:timesheeet_record.get_assined_hours %}
+                    <option value="{{ forloop.counter }}" {% if timesheeet_record.get_hours == forloop.counter %} selected="true" {% endif %}>{{ forloop.counter }} Hours</option>
+                {% endfor %}
+            </select>
+        </div>
+    </td>
+</tr>
+{% endfor %}

@@ -1,0 +1,78 @@
+{% if leave %}
+    <tr class="bg-{{leave.get_status_color}}">
+        <td>{{ dt }}</td>
+        <td>11:00 AM - 8:00 PM</td>
+        <td></td>
+        <td></td>
+        <td>{{leave.get_type_display}}</td>
+        <td>Full Day Leave</td>
+        <td>{{leave.get_status}}</td>
+        <td></td>
+    </tr>
+
+{% elif day_object and day_object.get_duration %}
+    <tr>
+        <td>{{ dt }}</td>
+        <td>11:00 AM - 8:00 PM</td>
+        <td>{{ day_object.get_first_in_time }}</td>
+        <td>{{ day_object.get_last_out_time }}</td>
+        <td>{{ day_object.get_duration }}</td>
+        {% if day_object.leave %}
+            <td class="text-{{day_object.leave.get_status_color}}">{{ day_object.leave.get_leave_for_display}}</td>
+            <td>{{day_object.leave.get_status}}</td>
+        {% else %}
+            <td></td>
+            <td></td>
+        {% endif %}
+        <td><a data-url="{% url 'attendance:get-attendance-detail' %}" data-attendance_id="{{ day_object.id }}" class="view_attendance"><i class="fa fa-eye" aria-hidden="true"></i></a></td>
+    </tr>
+
+{% elif weekly_off %}
+
+    <tr style="background-color:#a79f9f; color:white;">
+        <td>{{ dt }}</td>
+        <td>11:00 AM - 8:00 PM</td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td>{{weekly_off.get_type_display}}</td>
+        <td>{{weekly_off.description}}</td>
+        <td></td>
+    </tr>
+
+{% elif holiday %}
+    <tr style="background-color:#a79f9f; color:white;">
+        <td>{{ dt }}</td>
+        <td>11:00 AM - 8:00 PM</td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td>{{holiday.get_type_display}}</td>
+        <td>{{holiday.description}}</td>
+        <td>Holiday</td>
+    </tr>
+{% else %}
+
+    <tr style="background-color:#a79f9f; color:white;">
+        <td>{{ dt }}</td>
+        <td>11:00 AM - 8:00 PM</td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td>ERROR</td>
+    </tr>
+
+    {% comment%}
+    <tr>
+        <td>{{ dt }}</td>
+        <td>11:00 AM - 8:00 PM</td>
+        <td>{{ day_object.get_first_in_time }}</td>
+        <td>{{ day_object.get_last_out_time }}</td>
+        <td>{{ day_object.get_duration }}</td>
+        <td><a data-url="{% url 'attendance:get-attendance-detail' %}" data-attendance_id="{{ day_object.id }}" class="view_attendance"><i class="fa fa-eye" aria-hidden="true"></i></a></td>
+    </tr>
+    {% endcomment%}
+
+{% endif %}

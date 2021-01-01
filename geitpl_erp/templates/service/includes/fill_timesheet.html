@@ -1,0 +1,70 @@
+{% load staticfiles timesheet_tag %}
+{% load staticfiles custom_user_tag %}
+{% load custom_tags %}
+{% load widget_tweaks %}
+
+
+<div class="modal-header">
+    <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+    <div class="panel panel-success">
+        <div class="panel-heading">
+             {{user.get_full_name }} ( {% now 'd F'%} )
+            <i class="fa fa-dollar-up text-navy"></i>
+        </div>
+    </div>
+</div>
+<div class="modal-body">
+<div class="row" >
+    <form action="{% url 'service:employee-fill-timesheet' %}" id="form-fill-timesheet" method="POST">
+    {% csrf_token %}
+    <div class="col-md-12">
+        <div class="panel-body">
+
+            <div class="table-responsive">
+                <table class="table table-stripped table-bordered">
+                    <thead>
+                        <th>Project</th>
+                        <th>Assined Hours</th>
+                        <th>Filled Hours</th>
+
+                    </thead>
+                    <tbody>
+
+                        {% include 'service/includes/_timesheet_service_create.html'%}
+                        {% include 'service/includes/_timesheet_service_update.html'%}
+
+                    </tbody>
+                </table>
+                <hr/>
+                <table class="table table-stripped table-bordered" id="day-timesheet">
+                    <thead >
+                        <th colspan="4">Chose Heads ( Work Not included on service )</th>
+                        <th colspan="1">
+                            <button id="add-new-timesheet-row" class="btn btn-white"><i class="fa fa-plus"></i> </button>
+                        </th>
+                    </thead>
+                    <tbody id="time-sheet-records-body">
+
+                    <!-- Dom loaded by ajax on select box call  -->
+                    {% include 'service/includes/_timesheet_task_update.html'%}
+
+                    </tbody>
+
+                    <tfoot>
+    
+
+                    </tfoot>
+                </table>
+            </div>
+        </div>
+
+    </div>
+    </form>
+
+</div>
+<div class="modal-footer">
+    <button type="button" class="btn btn-white" data-dismiss="modal">Close</button>
+    <button type="button" class="btn btn-primary" id="timesheet_save">Save changes</button>
+</div>
+
+

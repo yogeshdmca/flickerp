@@ -1,0 +1,43 @@
+<div class="ibox-content">
+<div class="table-responsive">
+<table class="table table-hover manage-project-listing">
+    <tbody>
+    {% for service in services %}
+    <tr>
+        <td class="manage-project-title">
+            <a href="#">{{service.title}}</a>
+            <small class="{% if service.type == 'freetask' %}text-danger{% endif %}">{{service.get_type_display}}</small>
+        </td>
+        <td>
+            <span class="pie">{{service.get_completed_percentage}}/100</span>
+            {{service.get_completed_percentage|floatformat:0 }}% Complted
+        </td>
+
+        <td class="manage-project-info" >
+            {% if service.type == 'dedicated'%}
+            <a href="javascript:void(0)">{{service.get_available_hours}} hours / Day till {{service.end_date}}</a>
+            {% else %}
+                <a href="javascript:void(0)">{{service.get_available_hours}} hours emaining</a>
+            {% endif %}
+            <small>{{service.get_alloted_hours|default:"0"}} Seduled</small>
+        </td>
+        <td class="text-{{service.get_service_expire_colore}}">
+
+            <span>{{service.get_service_expire_title}}</span>
+        </td>
+
+        <td>
+            {% for allot in service.get_alloted_today %}
+            <a href="javascript:void(0)">{{allot.alloted_to.get_full_name}} / {{allot.hours}} Hours</a> <br/>
+            {% empty %}
+                <span class="text-red">Service not assigned</span>
+            {% endfor %}
+        </td>
+        {% include 'service/includes/action.html'%}
+    </tr>
+    {% endfor %}
+
+    </tbody>
+</table>
+</div>
+</div>

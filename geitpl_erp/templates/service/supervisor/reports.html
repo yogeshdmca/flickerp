@@ -1,0 +1,106 @@
+{% extends 'layout/layout.html' %}
+{% load staticfiles custom_tags timesheet_tag %}
+
+{% block content %}
+<div class="row">
+    <form method="get">
+        <div class="col-md-3">
+            <select class="form-control" name="month" id="month">
+                {% for mnt in month_dict %}
+                    <option value="{{ mnt.id }}" {% if mnt.id == month %}selected="selected"{% endif %}>{{mnt.month_name}}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="col-md-3">
+            <select class="form-control" name="year" id="year">
+                {% for yr in year_dict %}
+                    <option value="{{ yr.id }}" {% if yr.id == year %}selected="selected"{% endif %}>{{ yr.year }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="col-md-3">
+            <select class="form-control" name="supervisor">
+                {% for sr in supervisors %}
+                    <option value="{{sr.id}}" {% if sr == supervisor %}selected="selected"{% endif %}>{{ sr.full_name }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="col-md-1">
+            <input type="submit" class="btn btn-primary" value="submit">
+        </div>
+    </form>
+</div>
+<div class="row">
+    <div class="col-lg-12">
+        <div class="wrapper wrapper-content animated fadeInUp">
+            <div class="ibox gray-bg">
+                <div class="ibox-title">
+                    <h5>Reports</h5>
+                </div>
+                <div class="ibox-content">
+                    <div class="">
+                        <table class="table table-hover table-stripped default">
+                            <tbody>
+                            {% for user in users %}
+                                {% if user != request.user and supervisor != user %}
+                                    {% get_month_hours user month year %}
+                                {% endif %}
+                            {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+<div class="modal inmodal" id="serviceDetails" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+    </div>
+    </div>
+</div>
+
+<div class="modal inmodal" id="serviceOTP" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-sm">
+    <div class="modal-content">
+    </div>
+    </div>
+</div>
+
+
+{% endblock %}
+
+{% block script %}
+    {{block.super}}
+    <script src="{% static 'js/plugins/ionRangeSlider/ion.rangeSlider.min.js' %}"></script>
+{% endblock %}
+
+{% block js%}
+<script type="text/javascript">
+$('body').on('hidden.bs.modal', '.modal', function () {
+    $(this).removeData('bs.modal');
+});
+
+$(function(){
+    $('.hours_slider').each(function(){
+        hours = $(this).data('total_hours');
+        $(this).ionRangeSlider({
+            min: 0,
+            max: 200,
+            type: 'single',
+            step: 1,
+            postfix: "Hours",
+            prettify: false,
+            hasGrid: true,
+            from: hours,
+            from_fixed: true,
+        });
+    });
+});
+
+</script>
+{% endblock js%}

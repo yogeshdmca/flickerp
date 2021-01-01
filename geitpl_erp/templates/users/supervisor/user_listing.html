@@ -1,0 +1,164 @@
+{% extends 'layout/layout.html' %}
+{% load staticfiles %}
+{% load i18n %}
+
+{% block content %}
+<div class="row">
+<div class="col-lg-12">
+<div class="wrapper wrapper-content animated fadeInUp">
+
+    <div class="ibox">
+        <div class="ibox-title">
+            <h5>All Used listing</h5>
+        </div>
+        <div class="ibox-content">
+            <div class="project-list">
+
+                <table class="table table-hover">
+                    <tbody>
+                    {% for user in object_list %}
+
+                    <tr>
+                        <td class="user-people">
+                            {% if user.profile_image %}
+                            
+                            <img alt="image" class="img-circle" src="{{user.profile_image.url}}">
+                            {% else %}
+                            <img alt="image" class="img-circle" src="{% static 'img/user_default.png' %}">
+                            {% endif %}
+                        </td>
+
+
+                        <td class="project-title">
+                            <a href="javascript:valid(0)">{{ user.full_name|title }}</a>
+                            <br/>
+                            <small>TL: {{ user.parent.full_name|title }}</small>
+                            <br/>
+                            <small>Email: {{ user.email }}</small>
+
+                        </td>
+
+                        <td class="project-completion">
+                                <small>Department: <span class="label label-primary"> {{ user.get_department_display }} </span></small>
+                                <br/><br/>
+                                <small>Designation: <span class="label label-primary"> {{user.designation}}</span></small>
+                        </td>
+
+                        <td class="project-status">
+                            <small>EXP:  <span class="label label-primary">{{ user.date_of_joining|timesince }}</span> </small>
+                            <br/><br/>
+                            <small>DOJ:  <span class="label label-primary">{{ user.date_of_joining }}</span> </small>
+                        </td>
+
+                        {% if request.user.department != '2' and request.user.department != '3' or request.user.is_admin  %}
+                                                
+                        <td class="project-actions">
+                            <!-- <a href="javascript:vaoid(0)" class="btn btn-white btn-sm"><i class="fa fa-folder"></i> View </a> -->
+                            <a data-user_id="{{ user.id }}" href="javascript:vaoid(0)" class="add_family_member btn btn-white btn-sm"><i class="fa fa-pencil"></i> Add Family Member </a>
+                        </td>
+                        {% endif %}
+                    </tr>
+
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+</div>
+</div>
+{% endblock %}
+
+
+{% block content1 %}
+    <div class="wrapper wrapper-content animated fadeInRight">
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="ibox float-e-margins">
+                    <div class="ibox-title">
+                        <h5>Users</h5>
+                        <div class="ibox-tools">
+                            <a class="collapse-link">
+                                <i class="fa fa-chevron-up"></i>
+                            </a>
+                        </div>
+                    </div>
+                    <div class="ibox-content">
+                        <div class="table-responsive">
+                            <table style="width:100%;" class="table object_listing table-striped table-bordered table-hover" >
+                                <thead>
+                                    <tr>
+                                        <th>Full Name</th>
+                                        <th>Email</th>
+                                        <th>Date of Joining</th>
+                                        <th>Current Experience</th>
+                                        <th>Department</th>
+                                        <th>Supervisor</th>
+                                        <th>Operations</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for user in object_list %}
+                                        {% if user.is_active %}
+                                            <tr>
+                                                <!--<td><a data-url="{% url 'user:ajax-show-user' %}" data-user_id="{{ user.id }}" class="show_user">Show</a></td>-->
+                                                <td>{{ user.full_name|title }}</td>
+                                                <td>{{ user.email }}</td>
+                                                <td>{{ user.date_of_joining }}</td>
+                                                <td>{{ user.get_current_experience }}</td>
+                                                <td>{{ user.get_department_display }}</td>
+                                                <td>{{ user.parent.full_name|title }}</td>
+
+                                                <td>
+                                                {% if request.user.department != '2' and request.user.department != '3' or request.user.is_admin  %}
+                                                <a data-user_id="{{ user.id }}" class="add_family_member">Add Family Member</a>
+                                                {% endif %}
+                                                </td>
+                                            </tr>
+                                        {% endif %}    
+                                    {% endfor %}
+                                </tbody>
+                                <tfoot>
+                                    <tr>
+                                        <th>Full Name</th>
+                                        <th>Email</th>
+                                        <th>Date of Joining</th>
+                                        <th>Current Experience</th>
+                                        <th>Department</th>
+                                        <th>Supervisor</th>
+                                        <th>Operations</th>
+                                    </tr>
+                                </tfoot>
+                            </table>
+                        </div>
+                    </div>
+                    
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="user-show-modal" class="modal fade"  aria-hidden="true" >
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content animated bounceInRight">
+                <div class="modal-body">
+
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="family-member-show-modal" class="modal fade"  aria-hidden="true" >
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content animated bounceInRight">
+                <div class="modal-body">
+                    {% include 'users/partials/family_member_form.html' %}
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block script %}
+    {{ block.super }}
+    <script src="{% static 'js/users/user_list.js' %}"></script>
+{% endblock %}

@@ -1,0 +1,56 @@
+{% if timesheet_obj %}
+<div class="ibox float-e-margins" style="overflow:scroll max-height: 300px">
+    <div class="ibox-title">
+        <h5>{{heading}}</h5>
+
+        <div class="ibox-tools">
+            <a class="collapse-link">
+                <i class="fa fa-chevron-up"></i>
+            </a>
+            <a class="close-link">
+                <i class="fa fa-times"></i>
+            </a>
+        </div>
+
+    </div>
+    <div class="ibox-content">
+        <div class="anage-project-listing">
+            <table class="table table-hover no-margins">
+            <thead>
+                <tr>
+                    <th>Date</th>
+                    <th>Type</th>
+                    <th>Name</th>
+                    <th>hours</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+            {% for row in  timesheet_obj %}
+                <tr>
+                    <td>
+                        <span>{{row.date|date:'d M'}}</span>
+                    </td>
+                    <td class="project-title">
+                        <span>{{row.get_suportive}}</span>
+                    </td>
+                    <td class="project-title">
+                        <small>{{row.employee.full_name}}</small>
+                    </td>
+                    <td>
+                        <small>{{row.hours}}</small>    
+                    </td>
+                    <td>
+                    <a href="{% url 'service:employee-approve-timesheet'%}" class="approve-timeheet" data-pk="{{row.pk}}"><i class="fa fa-check text-navy"></i></a>
+
+                    <a href="{% url 'service:employee-reject-timesheet'%}" class="delete-record" data-pk="{{row.pk}}", data-name="status" data-modulename="TimesheetFiled",><i class="fa fa-close text-red"></i></a>
+                    </td>
+                </tr>
+            {% endfor %}
+            </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+{% endif %}

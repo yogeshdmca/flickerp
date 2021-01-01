@@ -1,0 +1,43 @@
+<tr>
+    <td class="desc" colspan="1">
+            <h3>
+            <a href="#" class="text-navy">
+                {{select_type_value}}
+                <input type="hidden" name="type" value="{{select_type}}">
+            </a>
+            </h3>
+    <td colspan="1">
+        <select name="task_name" class="form-control">
+            {% for tt in type %}
+            <option value="{{tt.id}}">{{tt.title}}</option>
+            {% endfor %}
+        </select>
+    </td>
+
+    <td colspan="1">
+        {% if suportive %}
+        <select name="suportive" class="form-control">
+            {% for sup in suportive %}
+            <option value="{{sup.id}}">{{sup.get_full_name}}</option>
+            {% endfor %}
+        </select>
+        {% else %}
+            <input type="text" name="suportive" class="form-control">
+        {% endif %}
+    </td>
+
+    <td colspan="1">
+        <div class="input-group date">
+            <select name="task_value">
+                {% for val in "x"|ljust:10 %}
+                <option value="{{ forloop.counter }}">{{ forloop.counter }} hours</option>
+                {% endfor %}
+            </select>
+        </div>
+    </td>
+
+    <td colspan="1">
+        <button class="btn btn-white delete-new"><i class="fa fa-trash"></i> </button>
+    </td>
+
+</tr>

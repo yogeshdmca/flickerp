@@ -1,0 +1,17 @@
+.idea/
+emails/
+media/
+*.pyc
+subl/
+collected_static/
+*.db
+nohup.out
+.env/
+wsgi.py
+prod.py
+manage_prod.py
+*yogesh.py
+log/
+celerybeat-schedule
+*attlog*
+*.sql

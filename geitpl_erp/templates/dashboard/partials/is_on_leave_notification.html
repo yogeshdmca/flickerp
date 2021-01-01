@@ -1,0 +1,33 @@
+{% if leaves %}
+<div class="ibox">
+<div class="ibox-title"> <h3> Leave Notifications </h3></div>
+<div class="ibox-content">
+<div class="row">
+    {% for leave in leaves %}
+        <div class="col-md-3">
+            <div class="ibox-content text-center">
+                <h4>{{leave.user.get_full_name}}</h4>
+                <div class="user-image img m-b-sm">
+                        {% if leave.user.profile_image%}
+                            <img alt="image" class="img-circle" src="{{leave.user.profile_image.url}}">
+                        {% else %}
+                            <i class="fa fa-user"></i>
+                        {% endif %}
+                </div>
+                <div class="text-center">
+                    <i class="fa fa-clock-o"></i>  {{leave.get_status_display}} </a>
+                </div>
+                <div class="text-center">
+                    <a class="btn btn-xs btn-white"><i class="fa fa-clock-o"></i>{{leave.get_leave_count_display}} </a>
+                </div>
+
+            </div>
+        </div>          
+    {% endfor %}
+</div>
+</div>
+</div>
+{% endif %}
+
+
+

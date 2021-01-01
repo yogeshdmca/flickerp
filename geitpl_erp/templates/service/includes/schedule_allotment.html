@@ -1,0 +1,137 @@
+{% load custom_tags %}
+{% load widget_tweaks %}
+<style type="text/css">
+    #manage-resources-panel{
+        display: none;
+    }
+    .btn{
+        float: right;
+        margin-left:10px;
+    }
+</style>
+<div class="modal-header">
+    <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+    <div class="panel panel-success">
+        <div class="panel-heading">
+            {{service.title}}
+            <i class="fa fa-dollar-up text-navy"></i>
+        </div>
+        <div class="panel-body">
+           <div class="row  m-t-sm">
+                <div class="col-sm-3">
+                    <div class="font-bold">Type</div>
+                    {{service.get_type_display}}
+                </div>
+                <div class="col-sm-3">
+                    <div class="font-bold">Supervisor</div>
+                    {{service.assigned_to}} / {{service.manager}}
+                </div>
+                <div class="col-sm-3">
+                    <div class="font-bold">Scheduled Hours / Available Hours</div>
+                    {{service.get_alloted_hours}} Hrs / {{service.get_available_hours}} Hrs {% if service.type == 'dedicated' %} Per Day {% endif %}
+                </div>
+                <div class="col-sm-3 text-right">
+                    <div class="font-bold">Status</div>
+                   {{service.get_status_display}}
+                </div>
+            </div>
+            <hr/>
+            <div>
+
+                <span>{{service.start_date}} - {{service.end_date}}</span>
+                <div class="stat-percent"></div>
+                <div class="progress">
+                    <div style="width: {{ service.get_completed_percentage }}%" aria-valuemax="100" aria-valuemin="0" aria-valuenow="{{ service.get_completed_percentage }}" role="progressbar" class="progress-bar progress-bar-success">
+                        <span class="sr-only">{{ service.get_completed_percentage }}% Complete (success)</span>
+                    </div>
+                </div>
+            </div>
+ 
+        </div>
+    </div>
+</div>
+<div class="modal-body">
+    <div class="panel panel-success">
+        <div class="panel-heading">
+            {{service.title}}
+            <i class="fa fa-dollar-up text-navy"></i>
+        </div>
+        <div class="panel-body">
+            <table class="table">
+                <tr>
+                    <td><strong>Developer</strong></td>
+                    {% for str_date in daterange %}
+                    <td>{{ str_date }}</td>
+                    {% endfor %}
+                </tr>
+                {% for user in service.assigned_to.get_all_childs_under_me %}
+                    {% if user|next_seven_days_schedule:service %}
+                        <tr>
+                            <td><strong>{{user.full_name}}</strong></td>
+                            {% for str_date in daterange %}
+                                <td>
+                                {% for schedule in user|next_seven_days_schedule:service %}
+                                    {% if str_date == schedule.date %}
+                                        <a class="hrs-link" data-user="{{ schedule.alloted_to_id }}" data-hrs="{{ schedule.hours }}" data-date="{{ schedule.date|date:"m/d/Y" }}">{{ schedule.hours }} HRS</a>
+                                    {% endif %}
+                                {% endfor %}
+                                </td>
+                            {% endfor %}
+                        </tr>
+                    {% endif %}
+                {% endfor %}
+            </table>
+            <button id="btn-add_resources" class="btn btn-success">Add Resources</button>    
+        </div>
+    </div>
+        
+    <div id="manage-resources-panel" class="panel panel-success">
+        <div class="panel-heading">Manage Resorces</div>
+        <div class="panel-body">
+           <div class="row  m-t-sm">
+           <form action="{% url 'service:supervisor-schedule-allotment' service.id %}" id="schedule-allotment-form" method="POST">
+                {% csrf_token %}
+                <div class="col-sm-3">
+                    <div class="form-group">
+                        {{ form.alloted_to|add_class:"form-control"|attr:"required:true" }}
+                    </div>
+                </div>
+                <div class="col-sm-2">
+                    <div class="form-group">
+                        {{ form.hours|add_class:"form-control"|attr:"required:true" }}
+                    </div>
+                </div>
+                <div class="col-sm-3">
+                    <div class="form-group">
+                        {{ form.date|add_class:"form-control"|attr:"placeholder:Start Date"|attr:"required:true" }}
+                    </div>
+                </div>
+                <div class="col-sm-3">
+                    <div class="form-group">
+                        <input type="text" name="date_to" id="date_to" required="true" placeholder="End Date" class="date form-control">
+                        <input type="hidden" name="is_update" value="False" id="is_update">
+                        <input type="hidden" name="is_delete" value="False" id="is_delete">
+                    </div>
+                </div>
+                <div class="col-sm-1">
+                    <div class="form-group">
+                        <button id="delete-allotment" type="button" class="btn btn-danger">Delete</button>
+                    </div>
+                </div>
+            </form>
+           </div>
+           <button type="button" class="btn btn-primary" id="save">Save changes</button>
+           <button type="button" class="btn btn-white" id="form-close">Close</button>
+        </div>
+    </div>
+
+<script type="text/javascript">
+$(".date").datepicker({
+    startDate: new Date(),
+    endDate:'{{ service.end_date|date:"m/d/Y" }}'
+});
+</script>
+</div>
+<div class="modal-footer">
+    <button type="button" class="btn btn-white" data-dismiss="modal">Close</button>
+</div>

@@ -1,0 +1,118 @@
+{% extends 'layout/layout.html' %}
+{% load staticfiles %}
+{% load i18n %}
+
+{% load custom_user_tag %}
+
+{% block title %}
+    {% trans 'shift Configuration' %}
+{% endblock %}
+
+{% block content %}
+    <div class="wrapper wrapper-content animated fadeInRight">
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="ibox float-e-margins">
+                    <div class="ibox-title">
+                        <h5>Attendance</h5>
+                        <div class="ibox-tools">
+                            <a class="collapse-link">
+                                <i class="fa fa-chevron-up"></i>
+                            </a>
+                        </div>
+                    </div>
+                    <div class="ibox-content">
+                        <div class="row">
+                            <form id="attendance-select" action="." method="post">
+                                {% csrf_token %}
+                                <div class="col-md-3">
+                                <select name="user" class="input-sm form-control">
+                                    <option value="all">All</option>
+                                    {% for user in users %}
+                                        <option value="{{user.id}}">{{user.full_name}}</option>
+                                    {% endfor %}
+                                </select>
+                                </div>
+                                
+                                <div class="col-md-4">
+                                    <div class="form-group" id="data_5">
+                                        <div class="input-daterange input-group" id="datepicker">
+                                            <input type="text" class="input-sm form-control" name="start_date"/>
+                                            <span class="input-group-addon">to</span>
+                                            <input type="text" class="input-sm form-control" name="end_date"/>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-2">
+                                    <select name="shift_id" class="input-sm form-control">
+                                        {% for shift in shifts %}
+                                        <option value="{{ shift.id }}">{{shift}}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+
+                                <div class="col-md-1">
+                                    <input id="submit_button" type="submit" class="btn btn-primary" value="update">
+                                    
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                    <div class="ibox-content">
+                        <div class="table-responsive">
+                            <table style="width:100%;" class="table object_listing table-bordered" >
+                                <thead>
+                                    <tr>
+                                        <th>User</th>
+                                        {% for day in dates %}
+                                           <th> {{day|date:"d M"}} </th>
+                                        {% endfor %}
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                {% for user in users %}
+                                    <tr>
+                                        <td>{{user.full_name}}</td>
+                                            {% for shift in user.weekly_shift %}
+                                                {% if shift.is_holiday %}
+                                                    <td>{{shift.is_holiday.get_type_display}}</td>
+                                                {% elif shift.have_leave%}
+                                                    <td>Leave</td>
+                                                {% else %}
+                                                <td>{{shift.shift.display_shift}}</td>
+                                                {% endif %}
+                                            {% endfor %}
+                                    </tr>
+                                {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="attendance-detail-modal" class="modal fade"  aria-hidden="true" >
+        <div class="modal-dialog modal-md">
+            <div class="modal-content animated bounceInRight">
+                <div class="modal-body">
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+{% block script %}
+    {{ block.super }}
+
+    <script type="text/javascript">
+
+    $('#data_5 .input-daterange').datepicker({
+        keyboardNavigation: false,
+        forceParse: false,
+        autoclose: true
+    });
+
+    </script>
+    
+
+{% endblock %}

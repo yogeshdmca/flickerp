@@ -1,0 +1,303 @@
+from django.db import models
+from django.db.models import Sum
+from user.models import CustomUser
+from django.conf import settings
+# Create your models here.
+from datetime import datetime, timedelta, date
+from contract import MONTHS, get_year,get_month
+from django.dispatch import receiver
+
+
+# default to 1 day from now
+
+
+def get_next_increment():
+    return datetime.now() + timedelta(days=365)
+
+
+PAYSLIP_LINE_TYPE = [
+    ('BA', 'Basic'),
+    ('HRA', 'HRA'),
+    ('DA', 'DA'),
+    ('GHI', "GHI"),
+    ('PTAX', "PTAX"),
+    ('PF', "PF"),
+    ('ESIC', "ESIC"),
+    ('TDS', 'TDS'),
+    ('BO', 'Bonus'),
+    ('INC', 'Incentive'),
+    ('TRAI', 'Taining'),
+    ('DED', 'Deduction'),
+    ('ALL', 'Allowance')
+
+]
+
+COMPONANT_LINE_TYPE = [
+    ('BA', 'Basic'),
+    ('HRA', 'HRA'),
+    ('DA', 'DA'),
+    ('PF', "PF"),
+    ('ESIC', "ESIC"),
+    ('GHI', "GHI"),
+    ('TDS', 'TDS'),
+    ('BO', 'Bonus'),
+    ('INC', 'Incentive'),
+    ('TRAI', 'Taining'),
+    ('DED', 'Deduction'),
+    ('ALL', 'Allowance')
+]
+
+
+class Contract(models.Model):
+    """ Using email instead of username """
+
+    user = models.ForeignKey(CustomUser, related_name="contracts")
+    basic = models.FloatField("Basic Salary", default=0)
+    hra = models.FloatField("HRA", default=0)
+    da = models.FloatField("DA", default=0)
+
+    created_by = models.ForeignKey(
+        settings.AUTH_USER_MODEL, related_name="contracts_created", verbose_name="Created By")
+    modified_by = models.ForeignKey(
+        settings.AUTH_USER_MODEL, related_name="contracts_modified", verbose_name="Modified By")
+
+    created_at = models.DateTimeField(auto_now_add=True)
+    modified_at = models.DateTimeField(auto_now=True)
+    expiry_date = models.DateField(default=get_next_increment)
+    is_active = models.BooleanField(default=True)
+
+    beneficiary_account_number = models.CharField(
+        "Account Number", max_length=100, null=True, blank=True)
+    ifsc_code = models.CharField(
+        "ifsc code", max_length=100, null=True, blank=True)
+
+    def __str__(self):
+        return self.user.full_name
+
+    def next_increment(self):
+        return self.expiry_date
+
+    def is_increment_color(self):
+        if (self.expiry_date - date.today()).days < 60 :
+            return 'bg-danger'
+        elif (self.expiry_date - date.today()).days < 60 :
+            return 'bg-warning'
+        else:
+            return 'bg-primary'
+
+    @property
+    def total(self):
+        return self.basic + self.hra + self.da
+
+    def total_salary(self):
+        return self.total-self.basic_deduction
+
+    @property
+    def basic_deduction(self):
+        componants = self.componants.filter(code="DED")
+        total_deduction = 0
+        for componant in componants:
+            if componant.method == 'fixed':
+                total_deduction = total_deduction + eval(componant.amount)
+
+            if componant.method == 'formula':
+                total_deduction = total_deduction + eval(componant.amount)
+
+            if componant.method == 'percentage':
+                total_deduction = total_deduction + \
+                    (self.total * eval(componant.amount)) / 100.0
+        return total_deduction
+
+
+class ContractComponant(models.Model):
+    contract = models.ForeignKey(Contract, related_name="componants")
+    name = models.CharField(max_length=100)
+    method = models.CharField(max_length=100, choices=[
+        ('formula', 'Formula'), ('fixed', 'Fixed'), ('percentage', 'Percentage')])
+
+    condition = models.CharField(
+        "Condition when this apply", max_length=500, default="1")
+
+    type = models.CharField(max_length=100, choices=COMPONANT_LINE_TYPE)
+
+    code = models.CharField(max_length=100, choices=[
+        ('DED', 'Deduction'), ('BO', 'BONUS'), ('ALL', 'Allowance')])
+
+    amount = models.CharField("Formula / fixed / Percentage", max_length=500)
+
+
+class PaySlip(models.Model):
+    """ Using email instead of username """
+    user = models.ForeignKey(CustomUser, related_name="pay_slips")
+    contract = models.ForeignKey(Contract)
+    created_by = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        related_name="payslips_created",
+        verbose_name="Created By"
+    )
+    created_at = models.DateField(auto_now_add=True)
+    leave_in_bank = models.CharField(max_length=5, default="0")
+    leave_in_month = models.CharField(max_length=5, default="0")
+    office_working_days = models.CharField(
+        "working dayS", max_length=5, default="0")
+    total_preset_days = models.CharField(max_length=5, default="0")
+    salary_month = models.CharField(max_length=20, choices=MONTHS, default=get_month(date.today()))
+    salary_year = models.CharField(max_length=20, default=get_year(date.today()))
+
+    class Meta:
+        order_with_respect_to = 'user'
+
+
+
+    # Going for write all method need for bank upload
+    def Transaction_Type(self):
+        if self.contract.ifsc_code == 'INDB0000878' or not self.contract.ifsc_code:
+            return 'I'
+        else:
+            return 'N'
+
+    def Beneficiary_Code(self):
+        return ''
+
+    def Value_Date(self):
+        return self.created_at.strftime("%d-%m-%Y")
+
+    def Debit_AC_Number(self):
+        return 201001128001
+
+    def Transaction_Amount(self):
+        return self.get_net_salary
+
+    def Beneficiary_Name(self):
+
+        return self.get_beneficiary_name()
+
+    def Beneficiary_Ac_No(self):
+        return self.get_beneficiary_account_number()
+
+    def IFSC_Code(self):
+        if self.Transaction_Type=='N':
+            return self.get_ifsc_code()
+        else:
+            return ''
+
+    def Bene_Email_ID(self):
+        if self.user.personal_email :
+            return self.user.personal_email
+        else:
+            self.user.email
+
+    def bene_Mobile_No(self):
+        if self.user.phone_number:
+            return self.user.phone_number 
+        else:
+            return ''
+
+    def Customer_Ref_No(self):
+        return '%su%s'%(self.id,self.user.id)
+
+    def Payment_Narration(self):
+        return "Geitpl Salary for %s"%((self.created_at-timedelta(days=28)).strftime("%b %y"))
+
+
+    # end of salary sheet for bank 
+
+
+    def get_beneficiary_name(self):
+        return "%s %s"%(self.user.first_name, self.user.last_name)
+
+    def get_beneficiary_account_number(self):
+        return self.contract.beneficiary_account_number
+
+    def get_ifsc_code(self):
+        return self.contract.ifsc_code
+
+    def get_value_date(self):
+        return date.today()
+
+    def get_bene_email_id(self):
+        return self.user.email
+
+    def get_bene_mobile_no(self):
+        self.user.phone_number
+
+    def get_customer_ref_no(self):
+        return str(date.today()) + 'u' + str(self.user.pk) + str(self.pk)
+
+    def get_pay_slip_month(self):
+        return self.created_at.replace(day=1)-timedelta(days=1)
+
+    @property
+    def get_training(self):
+        try:
+            return self.play_slip_lines.get(type='TRAI').amount
+        except:
+            return 0
+
+    @property
+    def get_leave_deduction(self):
+        if eval(self.leave_in_bank) >= eval(self.leave_in_month):
+            return 0
+        else:
+            deduction_days = eval(self.leave_in_month) - \
+                eval(self.leave_in_bank)
+            return int((self.calculate_basic_gross / eval(self.office_working_days)) * deduction_days)
+
+    @property
+    def calculate_basic_gross(self):
+        basic = self.play_slip_lines.filter(
+            type__in=['BA', 'HRA', 'DA']).aggregate(total=Sum('amount'))
+        return (basic.get('total', 0) - self.get_training)
+
+    @property
+    def absent_days_deduction(self):
+        absent_days = eval("%s-%s-%s" % (self.office_working_days,
+                                         self.leave_in_month, self.total_preset_days))
+        absent_days_ded = eval(
+            "((%s/%s)*%s)*1.5" % (self.calculate_basic_gross, self.office_working_days, absent_days))
+        return absent_days_ded > 0 and absent_days_ded or 0
+
+    @property
+    def get_net_salary(self):
+        gross = self.calculate_basic_gross - self.get_leave_deduction
+        rest_salary_lines = self.play_slip_lines.exclude(
+            type__in=['BA', 'HRA', 'DA', 'TRAI'])
+        for line in rest_salary_lines:
+            if line.code == 'DED':
+                gross = gross - line.amount
+            else:
+                gross = gross + line.amount
+        gross = gross - self.absent_days_deduction
+
+        return int(gross)
+
+    def get_allownces(self):
+        return self.play_slip_lines.exclude(code__in=['DED'])
+
+    def get_deduction(self):
+        return self.play_slip_lines.filter(code__in=['DED'])
+
+@classmethod
+def send_email_notification(cls)
+    paysleeps = cls.objects.filter(created_at__range = [date.today(), date.today()-timedelta(day=2))[2]
+    for paysleep in paysleeps:
+        subject, from_email, to = 'Yousalry for %s'%(paysleep.month), 'info@geitpl.com', paysleep.user.email
+        html_content = render_to_string('contract/email/salary_notification.html', {'paysleep':'paysleep'})
+        text_content = strip_tags(html_content)
+        msg = EmailMultiAlternatives(subject, text_content, from_email, ['yogesh@geitpl.com'])
+        msg.attach_alternative(html_content, "text/html")
+        msg.send()
+class PayslipComponant(models.Model):
+    payslip = models.ForeignKey(PaySlip, related_name="play_slip_lines")
+    name = models.CharField(max_length=100)
+    amount = models.FloatField("Amount", default=0)
+    type = models.CharField(max_length=50, choices=PAYSLIP_LINE_TYPE)
+    code = models.CharField(max_length=100, choices=[
+        ('DED', 'Deduction'), ('BO', 'BONUS'), ('ALL', 'Allowance')])
+    created_at = models.DateTimeField(auto_now_add=True)
+
+
+@receiver(models.signals.post_save, sender=Contract)
+def execute_after_save(sender, instance, created, *args, **kwargs):
+    from attendance.tasks import increment_status_update_email_notification
+    increment_status_update_email_notification.delay(instance)

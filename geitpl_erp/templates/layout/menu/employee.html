@@ -1,0 +1,83 @@
+<li>
+    <a aria-expanded="false" role="button" href="#" class="dropdown-toggle" data-toggle="dropdown">Leave & Attendance &nbsp;<span class="caret"></span></a>
+    <ul class="dropdown-menu">
+
+        <li>
+            <a href="{% url 'attendance:development-leave' %}">Leaves</a>
+        </li>
+
+        <li>
+            <a href="{% url 'attendance:development-wfh' %}">WFH</a>
+        </li>
+        <li>
+            <a href="{% url 'attendance:development-attendance-list' %}">Attendance</a>
+        </li>
+
+        <li>
+            <a href="{% url 'attendance:development-holiday-list' %}">Holidays</a>
+        </li>
+
+        {% if request.user.is_supervisor %}
+        <li>
+            <a href="{% url 'attendance:development-approve-leave' %}">Approve Leave</a>
+        </li>
+        {% endif %}
+    </ul>
+</li>
+<li>
+    <a aria-expanded="false" role="button" href="#" class="dropdown-toggle" data-toggle="dropdown">Employee &nbsp;<span class="caret"></span></a>
+    <ul class="dropdown-menu">
+        <li>
+            <a href="{% url 'user:profile' %}">My Info</a>
+        </li> 
+        <li>
+            <a href="{% url 'contract:development-show-contract' %}">My Contract</a>
+        </li>
+        <li>
+            <a href="{% url 'user:employee-users' %}">Employee Directory</a>
+        </li>
+        <li>
+            <a href="{% url 'support:employee-portfolio-list' %}">Portfolio</a>
+        </li>
+        
+
+        
+    </ul>
+</li>
+
+<li>
+    <a aria-expanded="false" role="button" href="javascript:void(0);" class="dropdown-toggle" data-toggle="dropdown">Timesheet&nbsp;<span class="caret"></span></a>
+    <ul class="dropdown-menu">
+        <li>
+            <a href="{% url 'service:timehseet' %}">TimeSheet</a>
+        </li> 
+    </ul>
+</li>
+
+
+{% if request.user.is_supervisor %}
+<li>
+    <a aria-expanded="false" role="button" href="javascript:void(0);" class="dropdown-toggle" data-toggle="dropdown">Service&nbsp;<span class="caret"></span></a>
+    <ul class="dropdown-menu">
+        <li>
+            <a href="{% url 'service:supervisor-services' %}">Services</a>
+        </li> 
+        
+        <li>
+            <a href="{% url 'service:supervisor-manage-project-daily' %}">Manage Project Daily</a>
+        </li>
+
+        <li>
+            <a href="{% url 'service:supervisor-emp-free-busy' %}">Employee Free Busy</a>
+        </li>
+        <li>
+        <a href="{% url 'service:supervisor-reporting' %}">Reporting</a>
+        </li>
+        
+        <li>
+        <a href="{% url 'user:employee-rating' %}">Emp. Ratings</a>
+        </li>
+
+    </ul>
+</li>
+{% endif %}

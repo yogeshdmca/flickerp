@@ -1,0 +1,76 @@
+
+<li>
+    <a aria-expanded="false" role="button" href="#" class="dropdown-toggle" data-toggle="dropdown">Users&nbsp;<span class="caret"></span></a>
+    <ul class="dropdown-menu">
+        <li>
+            <a href="{% url 'user:admin-user-create' %}">New User</a>
+        </li>
+        <li>
+            <a href="{% url 'user:admin-user-listing' %}">User List</a>
+        </li>
+    </ul>
+</li>
+<li>
+    <a aria-expanded="false" role="button" href="#" class="dropdown-toggle" data-toggle="dropdown">Sales&nbsp;<span class="caret"></span></a>
+    <ul class="dropdown-menu">
+        <li>
+            <a href="{% url 'opportunity:opportunities' %}">Opportunity List</a>
+        </li>
+        <li>
+            <a href="{% url 'opportunity:leads' %}">Lead List</a>
+        </li>
+        <li>
+            <a href="{% url 'support:employee-portfolio-list' %}">Portfolio</a>
+        </li>
+        
+    </ul>
+</li>
+
+<li>
+    <a aria-expanded="false" role="button" href="Javascript:void(0);" class="dropdown-toggle" data-toggle="dropdown">Employee&nbsp;<span class="caret"></span></a>
+    <ul class="dropdown-menu">
+        <li>
+            <a href="{% url 'user:profile' %}">My Profile</a>
+        </li>
+        <li>
+            <a href="{% url 'attendance:attendance-list' %}">Attendance</a>
+        </li>
+        <li>
+            <a href="{% url 'attendance:leave' %}">My Leaves</a>
+        </li>
+        <li>
+            <a href="{% url 'attendance:approve-leave' %}">Approve Leave</a>
+        </li>
+
+
+    </ul>
+</li>
+
+<li>
+    <a aria-expanded="false" role="button" href="#" class="dropdown-toggle" data-toggle="dropdown">HR&nbsp;<span class="caret"></span></a>
+    <ul class="dropdown-menu">
+        <li>
+            <a href="{% url 'contract:create-contract' %}">Create contract</a>
+        </li>
+        <li>
+            <a href="{% url 'contract:show-contract' %}">Show contracts</a>
+        </li>
+        <li>
+            <a href="{% url 'attendance:administration-monthly-attendance' %}">Monthly Attendance</a>
+        </li>
+        
+        <li>
+            <a href="{% url 'attendance:attendance-upload' %}">Upload Attendance</a>
+        </li>
+        <li>
+            <a href="{% url 'attendance:holiday-list' %}">Holidays</a>
+        </li>
+
+
+        <li>
+            <a href="{% url 'attendance:humanresource-shift-list-create' %}">Shift Config</a>
+        </li>
+    </ul>
+</li>
+
+{% include 'layout/menu/services.html'%} <!-- services  -->

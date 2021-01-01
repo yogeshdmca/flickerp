@@ -1,0 +1,43 @@
+{% if category.field_type == 'user' %}
+<select name="suportive", class="form-control">
+	{% for user in users %}
+		<option value="{{user.id}}">{{user.get_full_name}}</option>
+	{% endfor %}
+</select>
+
+<input type="hidden" name="field_type", value="user">
+
+{% elif category.field_type == 'service' %}
+
+<select name="suportive", class="form-control">
+	{% for service in services %}
+		<option value="{{service.id}}">{{service.get_full_name}}</option>
+	{% endfor %}
+</select>
+
+<input type="hidden" name="field_type", value="service">
+
+{% elif category.field_type == 'm2m_user' %}
+
+{% elif category.field_type == 'm2m_service' %}
+
+{% elif category.field_type == 'client' %}
+
+<select name="suportive", class="form-control">
+	{% for client in clients %}
+		<option value="{{client.id}}">{{client.client_name}}</option>
+	{% endfor %}
+</select>
+<input type="hidden" name="field_type", value="client">
+
+{% elif category.field_type == 'text' %}
+
+<input type="text" name="suportive" class="form-control" placeholder="Description of task">
+<input type="hidden" name="field_type", value="text">
+
+{% else %}
+
+<label>No Selection available for this option</label>
+
+
+{% endif %}

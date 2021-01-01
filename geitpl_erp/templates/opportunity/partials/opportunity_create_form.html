@@ -1,0 +1,37 @@
+<div class="modal-header">
+    <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+    <div class="panel panel-success">
+        <div class="panel-heading">
+             Update Record
+        </div>
+    </div>
+</div>
+
+<div class="modal-body">
+    <div class="row">
+        <form id="sales-opportunity-create-form" action="{% url 'opportunity:sales-opportunity-create' %}" method="POST" role="form" enctype="multipart/form-data">
+            {% csrf_token %}
+            {% include 'layout/horizonal_form_top_label.html' with form=form%}
+            {% include 'layout/horizonal_form_top_label.html' with form=opportunity_scheduler_form%}
+            
+        </form>
+    </div>
+
+</div>
+
+<div class="modal-footer">
+    <button type="button" class="btn btn-white" data-dismiss="modal">Close</button>
+    <button type="button" class="btn btn-primary" id="sales-opportunity-create-btn-save">Save changes</button>
+</div>
+
+
+<script type="text/javascript">
+    $('#sales-opportunity-create-form').ajaxForm({success:prospectCreateForm});
+    $("#id_call_schedule").datetimepicker({
+        //defaultDate: new Date(),
+        changeMonth: true,
+        changeYear: true,
+        format:'MM-DD-YYYY hh:mm A',
+        autoclose: true,
+});
+</script>

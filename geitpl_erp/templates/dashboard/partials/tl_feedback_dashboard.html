@@ -1,0 +1,21 @@
+{% load i18n custom_tags timesheet_tag %}
+
+<div class="row">
+    {% if user.display_feedback %}
+    <div class="col-lg-3">
+        <div class="ibox float-e-margins">
+            <div class="ibox-title">
+                <span class="label label-primary pull-right">{{user.display_feedback.tl.first_name}} </span>
+                <h5> Feedback by </h5>
+            </div>
+            <div class="ibox-content">
+                <div class="stat-percent font-bold text-success">{{user.display_feedback.created_at|date:'F'}} <i class="fa fa-clock-o"></i></div>
+
+                <small>{{user.display_feedback.suggestion}}</small>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+</div>
+
+

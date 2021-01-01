@@ -1,0 +1,124 @@
+{% extends 'layout/layout.html' %}
+{% load staticfiles %}
+{% load i18n %}
+{% load widget_tweaks %}
+
+{% block content %}
+
+<div class="row wrapper border-bottom black-bg page-heading">
+    <div class="col-lg-8">
+        <h2>Work from records</h2>
+    </div>
+    <div class="col-lg-2">
+        <h2>
+        <a data-toggle="modal" href="{% url 'attendance:request_for_work_from_home' %}" class="btn btn-w-m btn-warning" data-target="#leave-create-modal"><i class="fa fa-plus"></i>  WFH Request</a>
+        </h2>
+    </div>
+</div>
+
+<div class="wrapper wrapper-content animated fadeInRight">
+    <div class="row">
+        <div class="col-lg-12">
+        <div class="ibox float-e-margins">
+        <div class="ibox-content">
+        <div class="table-responsive">
+            <table style="width:100%;" class="table object_listing table-striped table-bordered table-hover" >
+                <thead>
+                    <tr>
+                        <th>Date</th>
+                        <th>TL Name</th>
+                        <th>Request date</th>
+                        <th>hubstaff id</th>
+                        <th>Status</th>
+                        <th>Option</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for object in object_list %}
+                        <tr>
+                            <td width="30%">{{ object.date }}</td>
+                            <td width="10%">{{ object.supervisor.get_full_name }}</td>
+                            <td width="15%"> 
+                                {{object.created_at}}
+                            </td>
+                            <td width="15%">{{ object.hubstaff_id }}</td>
+                            
+                            <td width="15%" class="text-{{object.get_status_color}}">
+                                {{object.get_status_display}}
+                            </td>
+
+                            <td> {% if object.status == '1'%}
+                            <a data-pk= "{{object.id}}" href="javascript:void(0)"><i class="fa fa-remove"></i></a>
+                            {% endif %}</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        </div>
+        </div>
+        </div>
+    </div>
+</div>
+
+
+
+<div id="leave-create-modal" role="dialog" class="modal"  aria-hidden="true" >
+<div class="modal-dialog modal-sm">
+<div class="modal-content animated bounceInRight">
+</div>
+</div>
+</div>
+
+
+{% endblock %}
+{% block script %}
+    {{ block.super }}
+    <script src="{% static 'js/attendance/attendance_list.js' %}"></script>
+
+
+<script type="text/javascript">
+
+$('body').on('hidden.bs.modal', '.modal', function () {
+$(this).removeData('bs.modal');
+});
+
+$('td a i.fa.fa-remove').click(function(){
+        var wfh_id = $(this).parent().data('pk')
+        var elm = $(this)
+        $.ajax({
+            type:'POST',
+            url: "{% url 'attendance:request_for_wfh_delete'%}",
+            data:{'wfh_id':wfh_id, 'csrfmiddlewaretoken':'{{ csrf_token }}'},
+            success: function(res){
+                if (res.success == '1'){
+                    elm.parent().parents('tr').remove()
+                }else{
+                    alert("It Cant be deleted!!")
+                }
+            }
+        })
+});
+
+$(document).on("click", "#request_for_wfh_btn", function(){
+    var form = $("#request_for_wfh")
+    var for_data = form.serialize()
+    var url = "{% url 'attendance:request_for_work_from_home'%}"
+    $.ajax({
+        type:'POST',
+        url: url,
+        data: for_data,
+        success: function(res){
+            if (res.success == '1'){
+                alert(res.msg)
+                window.location.reload()
+            }else{
+                alert(res.msg)
+            }
+        }
+    })
+})
+
+</script>
+
+{% endblock %}

@@ -1,0 +1,205 @@
+{% extends 'layout/layout.html' %}
+{% load staticfiles %}
+{% load i18n %}
+{% load widget_tweaks %}
+
+{% block title %}{% trans 'Create User' %}{% endblock %}
+
+{% block content %}
+    <div class="wrapper wrapper-content animated fadeInRight">
+        <form autocomplete="off" method="post" role="form" enctype="multipart/form-data">
+            {% csrf_token %}
+            <!-- User Information Block -->
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="ibox float-e-margins">
+                        <div class="ibox-title">
+                            <h5>Basic Information</h5>
+                            <div class="ibox-tools">
+                                <a class="collapse-link">
+                                    <i class="fa fa-chevron-up"></i>
+                                </a>
+                            </div>
+                        </div>
+                        <div class="ibox-content">
+                            <div class="row">
+                                <div class="form-group col-lg-6">
+                                    <label class="col-sm-6 control-label">First Name</label>
+                                    <div class="col-sm-6">{{ form.first_name|add_class:"form-control"|attr:"required:true" }}
+                                    {{ form.first_name.errors }} </div>
+                                </div>
+                                <div class="form-group col-lg-6">
+                                    <label class="col-sm-6 control-label">Last Name</label>
+                                    <div class="col-sm-6">{{ form.last_name|add_class:"form-control"|attr:"required:true" }}
+                                    {{ form.last_name.errors }}</div>
+                                </div>
+                                <div class="form-group col-lg-6">
+                                    <label class="col-sm-6 control-label">Official Email Address</label>
+                                    <div class="col-sm-6">{{ form.email|add_class:"form-control"|attr:"required:true" }}
+                                    {{ form.email.errors }}</div>
+                                </div>
+                                <div class="form-group col-lg-6">
+                                    <label class="col-sm-6 control-label">Personal Email Address</label>
+                                    <div class="col-sm-6">{{ form.personal_email|add_class:"form-control" }}
+                                    {{ form.personal_email.errors }}</div>
+                                </div>
+                                <div class="form-group col-lg-6">
+                                    <label class="col-sm-6 control-label">Phone Number</label>
+                                    <div class="col-sm-6">{{ form.phone_number|add_class:"form-control"|attr:"required:true" }}
+                                    {{ form.phone_number.errors }}</div>
+                                </div>
+                                <div class="form-group col-lg-6">
+                                    <label class="col-sm-6 control-label">Alternate Phone Number</label>
+                                    <div class="col-sm-6">{{ form.alternate_phone_number|add_class:"form-control"|attr:"required:true" }}
+                                    {{ form.alternate_phone_number.errors }}</div>
+                                </div>           
+                                <div class="form-group col-lg-6">
+                                    <label class="col-sm-6 control-label">Skype</label>
+                                    <div class="col-sm-6">{{ form.skype|add_class:"form-control"|attr:"required:true" }}
+                                    {{ form.skype.errors }}</div>
+                                </div>
+                                <div class="form-group col-lg-6">
+                                    <label class="col-sm-6 control-label">Date Of Birth</label>
+                                    <div class="col-sm-6">{{ form.date_of_birth|add_class:"form-control datePicker"|attr:"required:true" }}
+                                    {{ form.date_of_birth.errors }}</div>
+                                </div>
+                                
+                                {% ifequal 'update' type %}
+                                <div class="form-group col-lg-6">
+                                    <label class="col-sm-6 control-label">User Is Admin</label>
+                                    <div class="col-sm-6">{{ form.is_admin|add_class:"form-control" }}</div>
+                                </div>
+                                {% endifequal %}
+                                <div class="form-group col-lg-6">
+                                    <label class="col-sm-6 control-label">Profile Image</label>
+                                    <div class="col-sm-6">{{ form.profile_image }}</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Block End's -->
+
+            <!-- Address Information Block -->
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="ibox float-e-margins">
+                        <div class="ibox-title">
+                            <h5>User Address Information</h5>
+                            <div class="ibox-tools">
+                                <a class="collapse-link">
+                                    <i class="fa fa-chevron-up"></i>
+                                </a>
+                            </div>
+                        </div>
+                        <div class="ibox-content">
+                            <div class="row">
+                                <div class="form-group col-lg-6">
+                                    <label class="col-sm-6 control-label">State</label>
+                                    <div class="col-sm-6">{{ form.state|add_class:"form-control"|attr:"required:true" }}
+                                    {{ form.state.errors }}</div>
+                                </div>
+                                <div class="form-group col-lg-6">
+                                    <label class="col-sm-6 control-label">City</label>
+                                    <div class="col-sm-6">{{ form.city|add_class:"form-control"|attr:"required:true" }}
+                                    {{ form.city.errors }}</div>
+                                </div>
+                                <div class="form-group col-lg-6">
+                                    <label class="col-sm-6 control-label">Address</label>
+                                    <div class="col-sm-6">{{ form.address|add_class:"form-control"|attr:"required:true" }}
+                                    {{ form.address.errors }}</div>
+                                </div>
+                                <div class="form-group col-lg-6">
+                                    <label class="col-sm-6 control-label">Pin Code</label>
+                                    <div class="col-sm-6">{{ form.pin_code|add_class:"form-control"|attr:"required:true" }}
+                                    {{ form.pin_code.errors }}</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Block End's -->
+            <!-- Official Information Block -->
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="ibox float-e-margins">
+                        <div class="ibox-title">
+                            <h5>Official Information</h5>
+                            <div class="ibox-tools">
+                                <a class="collapse-link">
+                                    <i class="fa fa-chevron-up"></i>
+                                </a>
+                            </div>
+                        </div>
+                        <div class="ibox-content">
+                            <div class="row">
+                                <div class="form-group col-lg-6">
+                                    <label class="col-sm-6 control-label">Skills</label>
+                                    <div class="col-sm-6">{{ form.skills|add_class:"form-control"|attr:"required:true" }}
+                                    {{ form.skills.errors }}</div>
+                                </div>
+                                <div class="form-group col-lg-6">
+                                    <label class="col-sm-6 control-label">Department</label>
+                                    <div class="col-sm-6">{{ form.department|add_class:"form-control"|attr:"required:true" }}
+                                    {{ form.department.errors }}</div>
+                                </div>
+                                <div class="form-group col-lg-6">
+                                    <label class="col-sm-6 control-label">Supervisor</label>
+                                    <div class="col-sm-6">{{ form.parent|add_class:"form-control"|attr:"required:true" }}
+                                    {{ form.parent.errors }}</div>
+                                </div>
+                                <div class="form-group col-lg-6">
+                                    <label class="col-sm-6 control-label">Designation</label>
+                                    <div class="col-sm-6">{{ form.designation|add_class:"form-control" }}
+                                    {{ form.parent.errors }}</div>
+                                </div>
+                                <div class="form-group col-lg-6">
+                                    <label class="col-sm-6 control-label">Machine ID</label>
+                                    <div class="col-sm-6">{{ form.machine_id|add_class:"form-control" }}
+                                    {{ form.machine_id.errors }}</div>
+                                </div>
+                                <div class="form-group col-lg-6">
+                                    <label class="col-sm-6 control-label">Date Of Joining</label>
+                                    <div class="col-sm-6">{{ form.date_of_joining|add_class:"form-control datePicker"|attr:"required:true" }}
+                                    {{ form.date_of_joining.errors }}</div>
+                                </div>
+                                <div class="form-group col-lg-6">
+                                    <label class="col-sm-6 control-label">Date Of Next Increment</label>
+                                    <div class="col-sm-6">{{ form.date_of_next_increment|add_class:"form-control datePicker"}}
+                                    {{ form.date_of_next_increment.errors }}</div>
+                                </div>
+                                <div class="form-group col-lg-6">
+                                    <label class="col-sm-6 control-label">Bond Till</label>
+                                    <div class="col-sm-6">{{ form.bond_till|add_class:"form-control datePicker" }}
+                                    {{ form.bond_till.errors }}</div>
+                                </div>
+                                <div class="form-group col-lg-6">
+                                    <label class="col-sm-6 control-label">Notice Period</label>
+                                    <div class="col-sm-6">{{ form.notice_period|add_class:"form-control" }}
+                                    {{ form.notice_period.errors }}</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Block End's -->
+
+            <!-- Submit Button -->
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="ibox float-e-margins">
+                        <div class="ibox-content">
+                            <div class="row">
+                                <button type="submit" class="btn btn-primary center-block">Submit</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Block End's -->
+        </form>
+    </div>
+{% endblock %}

@@ -1,0 +1,55 @@
+<div class="ibox">
+    <div class="ibox-title">
+        <h5>{{heading}}</h5>
+    </div>
+    <div class="ibox-content">
+        <div class="anage-project-listing">
+            <table class="table table-hover">
+            <thead>
+                <tr>
+                    <th>Date</th>
+                    <th>Name</th>
+                    <th>Type</th>
+                    <th>In Time</th>
+                    <th>Out Time</th>
+                    <th>Duration</th>
+                    <th>Comment</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+            {% for row in  user_attendance_summary %}
+                <tr>
+                    <td>
+                        <span>{{row.attendance_log.date}}</span>
+                    </td>
+                    <td>
+                        <span>{{row.attendance_log.user.full_name}}</span>
+                    </td>
+                    <td>
+                        <small>{{row.get_type_display}}</small>
+                    </td>
+                    <td>
+                        <small>{{ row.in_time }}</small>
+                    </td>
+                    <td>
+                        <small>{{ row.out_time }}</small>
+                    </td>
+                    <td>
+                        <small>{{ row.duration }}</small>
+                    </td>
+                    <td>
+                        <small>{{row.comment}}</small>    
+                    </td>
+                    <td>
+                    <a href="{% url 'attendance:approve-miss-punch' %}" class="approve-miss-punch" data-pk="{{row.pk}}"><i class="fa fa-check text-navy"></i></a>
+
+                    <a href="{% url 'attendance:reject-miss-punch' %}" class="reject-miss-punch" data-pk="{{row.pk}}"><i class="fa fa-close text-red"></i></a>
+                    </td>
+                </tr>
+            {% endfor %}
+            </tbody>
+            </table>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,55 @@
+{% load i18n custom_tags timesheet_tag %}
+
+<div class="row">
+    {% if user.pending_leave %}
+    <div class="col-lg-3">
+        <div class="ibox float-e-margins">
+            <div class="ibox-title">
+                <a class="label label-danger pull-right" target="_blank" href="{% url 'attendance:development-approve-leave' %}">Approve</a>
+                <h5> Leave Waiting </h5>
+            </div>
+            <div class="ibox-content">
+                <h1 class="no-margins">{{user.pending_leave}}</h1>
+                <small>Total Pending</small>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+
+    {% if user.waiting_feedback %}
+    <div class="col-lg-3">
+        <div class="ibox float-e-margins">
+            <div class="ibox-title">
+                <a class="label label-danger pull-right" target="_blank" href="{% url 'user:employee-rating' %}">Start</a>
+                <h5> Feedback Waiting </h5>
+            </div>
+            <div class="ibox-content">
+                <h1 class="no-margins">{{user.waiting_feedback}}</h1>
+                <small>Total Pending</small>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+
+
+    {% if user.waiting_feedback %}
+    <div class="col-lg-3">
+        <div class="ibox float-e-margins">
+            <div class="ibox-title">
+                <a class="label label-danger pull-right" target="_blank" href="{% url 'service:timehseet' %}?action=tl_approve_timehseet">Start</a>
+                <h5> Timeheet aproval  </h5>
+            </div>
+            <div class="ibox-content">
+                <h1 class="no-margins">{{user.pending_timesheet_approval}}</h1>
+                <small>Total Pending</small>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+
+
+</div>
+
+
+
+{% tl_approve_miss_punch user %}

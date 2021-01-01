@@ -1,0 +1,167 @@
+{% extends 'layout/layout.html' %}
+{% load staticfiles %}
+{% load i18n %}
+
+{% load custom_user_tag %}
+
+{% block title %}
+    {% trans 'Attendance List' %}
+{% endblock %}
+
+{% block content %}
+    <div class="wrapper wrapper-content animated fadeInRight">
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="ibox float-e-margins">
+                    <div class="ibox-title">
+                        <h5>Attendance</h5>
+                        <div class="ibox-tools">
+                            <a class="collapse-link">
+                                <i class="fa fa-chevron-up"></i>
+                            </a>
+                        </div>
+                    </div>
+                    <div class="ibox-content">
+                        <div class="row">
+                            <form id="attendance-select" action="." method="get">
+                                <div class="col-md-5">
+                                    {% if request.user.department == '1' %}
+                                        {% user_hierarchy_select %}
+                                    {% elif request.user.department == '4' %}
+                                        <select class="form-control" name="user" id="user">
+                                            <option value="">------------</option>
+                                            {% for user in users %}
+                                                <option value="{{ user.id }}">{{ user.full_name }}</option>
+                                            {% endfor %}
+                                        </select>
+                                    {% endif %}
+                                </div>
+                                <div class="col-md-3">
+                                    <select class="form-control" name="month" id="month">
+                                        {% for month in month_dict %}
+                                            <option value="{{ month.id }}">{{month.month_name}}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                                <div class="col-md-3">
+                                    <select class="form-control" name="year" id="year">
+                                        {% for year in year_dict %}
+                                            <option value="{{ year.id }}">{{ year.year }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                                <div class="col-md-1">
+                                    <input id="submit_button" type="button" class="btn btn-primary" value="submit">
+                                    
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                    <div class="ibox-content">
+                        <div class="table-responsive">
+                            <table style="width:100%;" class="table object_listing table-bordered" >
+                                <thead>
+                                    <tr>
+                                        <th>Date</th>
+                                        <th>Shift Timing</th>
+                                        <th>In Time</th>
+                                        <th>Out Time</th>
+                                        <th>Leave Details</th>
+                                        <th>Duration</th>
+                                        <th>Salary Deducted</th>
+                                        <th>Opt</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for log in attendance_logs %}
+                                        <tr>
+                                            <td>{{ log.date }}</td>
+                                            <td>{{ log.shift.shift.display_shift }}</td>
+                                            <td>{{ log.get_first_in_time }}</td>
+                                            <td>{{ log.get_last_out_time }}</td>
+                                            
+                                            {% if log.leave %}
+                                                <td><a href="javascript:void(0)" title="{{log.leave.get_status}}" class="text-{{log.leave.get_status_color}}">{{ log.leave.get_leave_for_display}}</a></td>
+                                            {% else %}
+                                                <td></td>
+                                            {% endif %}
+                                            <td>{{ log.get_duration_details }}</td>
+                                            <td> {{log.saalry_deducated }}</td>
+                                            <td><a data-url="{% url 'attendance:get-attendance-detail' %}" data-attendance_id="{{ log.id }}" class="view_attendance"><i class="fa fa-eye" aria-hidden="true"></i></a></td>
+                                        </tr>
+                                    {% endfor %}
+
+                                    <!--{% for dt in date_range %}
+                                        {% get_attendence_for_day dt select_user %}
+                                    {% endfor %}-->
+                                </tbody>
+                                <tfoot>
+                                    <tr>
+                                        <th>Total Hours</th>
+                                        <th>{{total_hours_in_month}}</th>
+                                        <th></th>
+                                        <th></th>
+                                        <th>Total working:</th>
+                                        <th>{{ total_working_hours }}</th>
+                                        <th></th>
+                                    </tr>
+                                </tfoot>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="attendance-detail-modal" class="modal fade"  aria-hidden="true" >
+        <div class="modal-dialog modal-md">
+            <div class="modal-content animated bounceInRight">
+                <div class="modal-body">
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+{% block script %}
+    {{ block.super }}
+    <script src="{% static 'js/attendance/attendance_list.js' %}"></script>
+    <link href="{% static 'css/plugins/hierarchy-select/hierarchy-select.min.css' %}" rel="stylesheet">
+    <script src="{% static 'js/hierarchy-select/hierarchy-select.min.js' %}"></script>
+    <script type="text/javascript">
+
+        $('#user-select').hierarchySelect({
+            width: "500"
+        });
+
+        $( "input#submit_button" ).click(function() {
+          $( "#attendance-select" ).submit();
+        });
+
+        function getSearchParams(k){
+             var p={};
+             location.search.replace(/[?&]+([^=&]+)=([^&]*)/gi,function(s,k,v){p[k]=v})
+             return k?p[k]:p;
+        }
+
+        var month = getSearchParams('month')
+        if (month){
+            $("select#month").val(month)
+        }else{
+            var d = new Date();
+            var m = d.getMonth()
+            var y = d.getFullYear()
+            $("select#month").val(m+1)
+        }
+
+        var year = getSearchParams('year')
+        if (year){
+            $("select#year").val(year)
+        }else{
+            var d = new Date();
+            var m = d.getMonth()
+            var y = d.getFullYear()
+            $("select#year").val(y)
+        }
+       
+    </script>
+{% endblock %}

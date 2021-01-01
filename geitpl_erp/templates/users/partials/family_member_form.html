@@ -1,0 +1,27 @@
+{% load widget_tweaks %}
+<div class="row">
+    <form action="{% url 'user:family-member-create' %}" id="id_family_member_create_form" method="POST" role="form" novalidate>
+        {% csrf_token %}
+        <input type="hidden" id="family_member_user_id" name="user" value="">
+        <div class="col-sm-6 b-r"><h3 class="m-t-none m-b">Family Member Information</h3>
+            <div class="form-group">
+                <label>Full Name</label>
+                {{ fm_form.full_name|add_class:"form-control"|attr:"required:true" }}{{ fm_form.full_name.errors }}
+            </div>
+            <div class="form-group">
+                <label>Relation with Employee</label>
+                {{ fm_form.relation_with_employee|add_class:"form-control"|attr:"required:true" }}{{ fm_form.relation_with_employee.errors }}
+            </div>
+        </div>
+        <div class="col-sm-6"><h3 class="m-t-none m-b">Other Information</h3>
+            <div class="form-group">
+                <label>Contact Number(Optional)</label>
+                {{ fm_form.contact_number|add_class:"form-control" }}{{ fm_form.contact_number.errors }}
+            </div>
+        </div>
+        <div class="col-sm-12"><h3 class="m-t-none m-b">
+            <button type="submit" class="btn btn-primary">Submit</button>
+            <button type="reset" class="btn btn-danger">Reset</button>
+        </div>
+    </form>
+</div>

@@ -1,0 +1,106 @@
+{% extends 'layout/layout.html' %}
+{% load staticfiles %}
+{% load i18n custom_tags timesheet_tag %}
+
+{% block title %}{% trans 'Dashboard' %}{% endblock %}
+
+{% block content %}
+<div class="row wrapper border-bottom black-bg page-heading">
+    <div class="col-lg-10">
+        <h2>DASHBOARD</h2>
+    </div>
+    <div class="col-lg-2">
+
+    </div>
+</div>
+    <div class="wrapper wrapper-content animated fadeInRight">
+        <div class="col-lg-9">
+
+        
+        {% include 'dashboard/partials/tl_feedback_dashboard.html'%}
+
+
+        {% recent_notifications %}
+        
+        {% comment %}
+            {% schedule_timehseet_tag user %}
+        {% endcomment %}
+
+        {% if request.user.is_supervisor %}
+            {% include 'dashboard/partials/supervisore_dashboard.html'%}
+        {% else %}
+            {% include 'dashboard/partials/developer_dashboard.html'%}
+        {% endif %}
+
+        <!-- load recent notifications  -->
+
+        {% include 'dashboard/partials/common_dashboard.html'%}
+
+        {% leave_notifications %}
+        {% wfh_notifications %}
+        
+        
+
+        </div>
+        <div class="col-lg-3">
+            <div class="ibox-title">
+                <h4>HIRARCHY STRUCTURE</h4>
+            </div>
+            <div class="ibox-content">
+                <div class='jstree-open' id="jstree" data-json="{{ listofusers }}">
+            </div>
+        </div>
+    </div>
+</div>
+<style>
+    .jstree-open > .jstree-anchor > .fa-folder:before {
+        content: "\f07c";
+    }
+
+    .jstree-default .jstree-icon.none {
+        width: 0;
+    }
+</style>
+{% endblock %}
+{% block script %}
+    {{ block.super }}
+    <script>
+    $(function() {
+                var arrayCollection = $('#jstree').data('json');
+                $('#jstree').jstree({
+                    'core': {
+                        'data': arrayCollection
+
+                    }
+                });
+            });
+        </script>
+
+
+        <script src="{% static 'js/plugins/fullcalendar/fullcalendar.min.js' %}"></script>
+
+
+<script type="text/javascript">
+        /* initialize the calendar
+         -----------------------------------------------------------------*/
+        var date = new Date();
+        var d = date.getDate();
+        var m = date.getMonth();
+        var y = date.getFullYear();
+
+        $('#calendar').fullCalendar({
+            //editable: true,
+            events: {
+                url: '/employee/get_all_events/',
+                method: 'GET',
+            },
+            firstDay: 1,
+
+            defaultView: 'basicWeek',
+            height: 260
+            
+        });
+            
+
+</script>
+{% endblock %}

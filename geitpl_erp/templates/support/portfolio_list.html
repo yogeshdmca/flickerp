@@ -1,0 +1,129 @@
+{% extends 'layout/layout.html' %}
+{% load staticfiles %}
+{% load i18n %}
+
+{% load custom_user_tag %}
+
+{% block title %}
+    {% trans 'Attendance List' %}
+{% endblock %}
+
+
+{% block CSS %}
+<style>
+    textarea { height: 45px !important;}
+</style>
+{% endblock %}
+
+{% block content %}
+    <div class="wrapper wrapper-content animated fadeInRight">
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="ibox float-e-margins">
+                    <div class="ibox-title">
+                        <h5>Portfolio List</h5>
+                        <div class="ibox-tools">
+
+                            <a href="{% url 'support:employee-portfolio-create'%}" data-target="#add-portfolio-modal" data-toggle="modal"><i class="fa fa-plus" aria-hidden="true"></i></a>
+                        </div>
+                    </div>
+                    <div class="ibox-content">
+                        <div class="table-responsive">
+                            <table style="width:100%;" class="table object_listing table-bordered" >
+                                <thead>
+                                    <tr>
+                                        <th>Image</th>
+                                        <th>Title</th>
+                                        <th>Skills</th>
+                                        <th>Industry</th>
+                                        <th>Developer</th>
+                                        <th>Time Taken</th>
+                                        <th>live url</th>
+                                        <th>Client</th>
+                                        <th>*</th>
+                                        
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for object in object_list %}
+                                        <tr>
+                                            <td><img src="{{ object.get_thumbnail }}"/> </td>
+                                            <td>{{ object.title }}</td>
+                                            <td> {% for skill in object.skills.all %} <p><span class="badge-primary"> {{ skill.name }} </span></p> {% endfor%}</td>
+
+                                            <td> {% for skill in object.industry.all %} <p><span class="badge-info"> {{ skill.title }} </span></p> {% endfor%}</td>
+
+                                            <td>{{ object.developer.full_name }}</td>
+                                            <td>{{ object.taken_hours }}</td>
+                                            <td> <a target="_blank" href="{{ object.live_url }}"> Live URL</a></td>
+                                            <td>{{ object.client }}</td>
+
+                                            <td><a data-url="" data-attendance_id="{{ log.id }}" class="view_attendance"><i class="fa fa-eye" aria-hidden="true"></i></a></td>
+                                        </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="add-portfolio-modal" class="modal fade"  aria-hidden="true" >
+        <div class="modal-dialog modal-md">
+            <div class="modal-content animated bounceInRight">
+                <div class="modal-body">
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+{% block script %}
+    {{ block.super }}
+        <script>
+        $(document).ready(function(){
+            $('.object_listing').DataTable({
+                pageLength: 25,
+                responsive: true,
+
+            });
+
+        });
+
+
+$('body').on('hidden.bs.modal', '.modal', function () {
+    $(this).removeData('bs.modal');
+});
+
+
+$(document).on("click", "#employee-portfolio-create-save", function(){
+    $("#employee-portfolio-create-form").submit()
+});
+
+function portfolioCreate(responseText, statusText, xhr, $form){
+    if(xhr.status == 212){
+        toastr.success("portfolio saved, add new records")
+        //$("#employee-portfolio-create-form").get(0).reset()
+        location.reload();
+
+        //$("button.btn.btn-white").click()
+        //$("i.fa.fa-plus").click()
+
+    }else if (xhr.status == 222){
+        $('#add-portfolio-modal .modal-content').html(responseText);
+        oastr.error("Please correct error!")
+
+    }
+};
+
+
+/*$(document).on("click","#save-rating", function(){
+    $("#employee-portfolio-create").submit()
+})*/
+
+
+</script>
+
+
+{% endblock %}

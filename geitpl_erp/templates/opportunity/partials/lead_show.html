@@ -1,0 +1,43 @@
+{% load widget_tweaks %}
+<div class="row">
+    <div class="col-sm-6 b-r"><h3 class="m-t-none m-b">Client Information</h3>
+        <div class="form-group">
+            <label>Client Name</label>
+            <p>{{ object.client_name }}</p>
+        </div>
+        <div class="form-group">
+            <label>Email Address</label>
+            <p>{{ object.email }}</p>
+        </div>
+        <div class="form-group">
+            <label>Phone Number</label>
+            <p>{{ object.phone_number }}</p>
+        </div>
+        <div class="form-group">
+            <label>Skype ID</label>
+            <p>{{ object.skype }}</p>
+        </div>
+    </div>
+    <div class="col-sm-6"><h3 class="m-t-none m-b">Other Information</h3>
+        <div class="form-group">
+            <label>Project Description</label>
+            <p>{{ object.description }}</p>
+        </div> 
+        <div class="form-group">
+            <label>Estimated Price (in USD)</label>
+            <p>{{ object.estimated_price }}</p>
+        </div>
+        <div class="form-group">
+            <label>Status</label>
+            <p>{{ object.status }}</p>
+        </div>
+    </div>
+    <div class="col-sm-12"><h3 class="m-t-none m-b">Attachments</h3>
+        {% for attachment in attachments %}
+            <div class="col-sm-4"><h5>{{ attachment.document.name }}</h5>
+            <a href="{{ attachment.document.url }}" class="fa {{ attachment.class_for_attachment }} fa-3x" download></a>
+            <a href="{{ attachment.document.url }}" download>Download</a>
+            </div>
+        {% endfor %}        
+    </div>
+</div>

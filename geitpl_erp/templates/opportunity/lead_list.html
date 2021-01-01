@@ -1,0 +1,182 @@
+{% extends 'layout/layout.html' %}
+{% load staticfiles %}
+{% load i18n %}
+{% load custom_user_tag %}
+
+
+{% block title %}
+    {% trans 'Lead List' %}
+{% endblock %}
+
+{% block content %}
+    <div class="wrapper wrapper-content animated fadeInRight">
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="ibox float-e-margins">
+                    <div class="ibox-title">
+                        <h5>Opportunities</h5>
+                        <div class="ibox-tools">
+                            <a data-toggle="modal" data-target="#lead-modal"><button class="btn btn-primary">New Lead</button></a>
+                            <a class="collapse-link">
+                                <i class="fa fa-chevron-up"></i>
+                            </a>
+                        </div>
+                    </div>
+                    <div class="ibox-content">
+                        <form>
+                            <div class="row">
+                                <div class="form-group col-lg-3">
+                                    {% user_hierarchy_select_for_sales %}
+                                </div>
+                                <div class="form-group col-lg-3">
+                                    <input type="text" placeholder="Start Date" class="form-control datePicker" name="start_date">
+                                </div>
+                                <div class="form-group col-sm-3">
+                                    <input type="text" placeholder="End Date" class="form-control datePicker" name="end_date">
+                                </div>
+                                <div class="form-group col-lg-1">
+                                    <button type="submit" class="btn btn-primary center-block">Submit</button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="ibox-content">
+                        <div class="table-responsive">
+                            <table style="width:100%;" class="table object_listing table-striped table-bordered table-hover" >
+                                <thead>
+                                    <tr>
+                                        <th>View</th>
+                                        <th>Client Name</th>
+                                        <th>Email</th>
+                                        <th>Phone Number</th>
+                                        <th>Status</th>
+                                        <th>Assigned To</th>
+                                        <th>Next Call Scheduled On</th>
+                                        <th>Created By</th>
+                                        <th>Created At</th>
+                                        <th></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for object in object_list %}
+                                        <tr>
+                                            <td><a class="lead-show" data-lead_id="{{ object.id }}" data-url="{% url 'opportunity:ajax-show-lead' %}">Show</a></td>
+                                             <td>{{ object.client|title }}</td>
+                                            <td>{{ object.client.email }}</td>
+                                            <td>{{ object.client.phone_number }}</td>
+                                            <td>{{ object.latest_schedule.get_result_display }}</td>
+                                            <td>{% for assigned in object.assigned_to.get_queryset %}
+                                            <p>{{ assigned }}</p>
+                                            {% endfor %}</td>
+                                            <td>{{ object.latest_schedule.call_schedule }}</td>
+                                            <td>{{ object.created_by }}</td>
+                                            <td>{{ object.created_at }}</td>
+                                            <td><a class="form_editable_class update_lead" data-pk="{{ object.id }}" data-lead_id="{{ object.id }}" data-schedular_id="{{ object.latest_schedule.id }}" data-url="{% url 'opportunity:ajax-update-scheduler-data-lead' %}" data-params="{lead:{{ object.id }}, csrfmiddlewaretoken:'{{ csrf_token }}'}" data-type="select">Update</a></td>
+                                        </tr>
+                                    {% endfor %}
+                                </tbody>
+                                <tfoot>
+                                    <tr>
+                                        <th>View</th>
+                                        <th>Client Name</th>
+                                        <th>Email</th>
+                                        <th>Phone Number</th>
+                                        <th>Status</th>
+                                        <th>Assigned To</th>
+                                        <th>Next Call Scheduled On</th>
+                                        <th>Created By</th>
+                                        <th>Created At</th>
+                                        <th></th>
+                                    </tr>
+                                </tfoot>
+                            </table>
+                        </div>
+                    </div>
+                    
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Modal -->
+    <div id="lead-update-modal" class="modal fade"  aria-hidden="true" >
+        <div class="modal-dialog modal-md">
+            <div class="modal-content animated bounceInRight">
+                <div class="modal-body">
+                    <div class="row">
+                        <form id="id_lead_next_schedule_form" action="{% url 'opportunity:ajax-update-scheduler-data-lead' %}" method="POST" role="form" enctype="multipart/form-data">
+                            {% csrf_token %}
+                            
+                            <input type="hidden" id="id_schedule_id" value="" name="schedule_id">
+                            <input type="hidden" id="id_lead_id" value="" name="lead_id">
+                            <input type="hidden" id="id_scheduler_result" value="" name="scheduler_result">
+
+                            <div class="col-sm-12"><h3 class="m-t-none m-b">Discussion with Client</h3>
+                                <div class="form-group">
+                                    <textarea class="form-control" required id="id_description" name="description" placeholder="Reason" rows="6"></textarea>
+                                </div>
+                            </div>
+                            <div class="col-sm-12" id="id_call_schedule_block"><h3 class="m-t-none m-b">Next Call Scheduled On</h3>
+                                <div class="form-group">
+                                    <input type="text" name="call_schedule" class="form-control datetimePicker">
+                                   
+                                </div>
+                                <div class="form-group">
+                                    <select name="communication_type" class="form-control">
+                                        <option>------</option>
+                                        <option value="1">Skype</option>
+                                        <option value="2">Email</option>
+                                        <option value="3">Phone Number</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-sm-12">
+                                <button type="submit" class="btn btn-primary">Submit</button>
+                                <button type="reset" class="btn btn-danger">Reset</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="lead-modal" class="modal fade"  aria-hidden="true" >
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content animated bounceInRight">
+                <div class="modal-body">
+                    {% include 'opportunity/partials/lead_create_form.html' %}
+                </div>
+            </div>
+        </div>
+    </div>
+     <div id="lead-show-modal" class="modal fade"  aria-hidden="true" >
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content animated bounceInRight">
+                <div class="modal-body">
+                    
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+{% block script %}
+    {{ block.super }}
+    <link href="{% static 'css/plugins/hierarchy-select/hierarchy-select.min.css' %}" rel="stylesheet">
+    <script src="{% static 'js/hierarchy-select/hierarchy-select.min.js' %}"></script>
+    <script src="{% static 'js/opportunity/lead_list.js' %}"></script>
+    <script type="text/javascript">
+         $(function(){
+            $('#id_client').click(function(e){
+                e.preventDefault();
+                var url = '/ajax/opportunity/get-client/';
+                var client = $(this).find(":selected").val();
+                $.get(url, {'client':client}, function(response){
+                    $('#id_client_name').val(response.client_name);
+                    $('#id_email').val(response.email);
+                    $('#id_phone_number').val(response.phone_number);
+                    $('#id_skype').val(response.skype);
+                });
+            });
+        });
+    </script>
+{% endblock %}

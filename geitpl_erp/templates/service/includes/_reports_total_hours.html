@@ -1,0 +1,17 @@
+<tr class="">
+    <td>
+        {{ user.full_name }}    
+    </td>
+    <td class="">
+        <div class="m-b-sm m-t">
+            <small>Total working hours from the on behalf of timesheet</small><br>
+            {% if total_hours < 120 %}
+            <small>Needed <strong>{{ remaining_hours }} to achieve Incentive</strong></small>
+            {% endif %}
+        </div>
+        <div data-total_hours="{{total_hours}}" class="hours_slider"></div>
+    </td>
+    <td>
+        Incentive: Rs. {{ incentive }}
+    </td>
+</tr>

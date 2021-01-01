@@ -1,0 +1,55 @@
+{% load staticfiles timesheet_tag %}
+
+<div class="row">
+<div class="col-lg-12">
+<div class="wrapper wrapper-content animated fadeInUp">
+<div class="ibox">
+    <div class="ibox-title">
+        <h5>Timesheet added for you</h5>
+    </div>
+    <div class="ibox-content">
+        <div class="anage-project-listing">
+            <table class="table table-hover">
+            <thead>
+                <tr>
+                    <th>Date</th>
+                    <th>Type</th>
+                    <th>Name</th>
+                    <th>Worked/Engaged (%)</th>
+                    <th> Status </th>
+                </tr>
+            </thead>
+
+            <tbody>
+            {% timesheet_filled_by_other_listing dates user_id as filled_by_other_listing %}
+
+            {% for row in  filled_by_other_listing %}
+                <tr>
+                    <td>
+                        <span>{{row.date}}</span>
+                    </td>
+
+                    <td class="project-title">
+                        <span>{{row.get_display_title}}</span>
+                    </td>
+                    <td class="project-title">
+                        <small>{{row.employee.full_name}}</small>
+                    </td>
+                    <td>
+                        <small>{{row.hours}}</small>    
+                    </td>
+
+                    <td>
+                        <small>{{row.get_approve_display}}</small>    
+                    </td>
+
+                </tr>
+            {% endfor %}
+            </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+</div>
+</div>
+</div>

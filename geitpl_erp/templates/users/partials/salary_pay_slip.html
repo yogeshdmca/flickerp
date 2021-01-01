@@ -1,0 +1,22 @@
+    <table class="table table-striped">
+        <thead>
+        <tr>
+            <th>Date</th>
+            <th>Net Salary</th>
+            <th>Leave</th>
+            <th>Absent/A2</th>
+            <th>Salary slip </th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for line in user.pay_slips.all|dictsortreversed:"id"|slice:"3"%}
+        <tr>
+            <td> <i class="fa fa-clock-o"> {{line.created_at|date:"F Y"}} </i></td>
+            <td><span >{{line.get_net_salary}}</span></td>
+            <td>{{line.leave_in_month}}</td>
+            <td class="text-navy">{{line.absent_days_deduction}}</td>
+            <td><a target="_blank" href="{% url 'contract:generate-salary-slip' pk=line.id %}">view</a></td>
+        </tr>
+        {% endfor %}
+        </tbody>
+    </table>

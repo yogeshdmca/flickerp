@@ -1,0 +1,49 @@
+<tr>
+    <td colspan="1">
+        <select class="timesheet_type form-control" name="timesheet_type">
+            <option value="">Select...</option>
+            {% for key, val in TIMESHEET_TYPE %}
+                <option value="{{key}}">{{val}}</option>
+            {% endfor %}
+        </select>
+    </td>
+
+    <td colspan="1">
+        <div>
+            <select class="timesheet_category form-control" name="timesheet_category">
+            </select>
+        </div>
+    </td>
+
+    <td colspan="1">
+
+    </td>
+
+    <td colspan="1">
+        <select name="task_value" class="hours form-control">
+            <option value="0.5"> 30 minuts</option>
+            <option value="1"> 1 hour</option>
+            <option value="1.5"> 1 hour 30 minuts </option>
+            <option value="2"> 2 hour</option>
+            <option value="2.5">2 hour 30 minuts </option>
+            <option value="3"> 3 hour</option>
+            <option value="3.5"> 3 hour 30 minuts </option>
+            <option value="4"> 4 hour</option>
+            <option value="4.5"> 4 hour 30 minuts </option>
+            <option value="5"> 5 hour</option>
+            <option value="5.5"> 5 hour 30 minuts </option>
+            <option value="6"> 6 hour</option>
+            <option value="6.5"> 6 hour 30 minuts </option>
+            <option value="7"> 7 hour</option>
+            <option value="7.5"> 7 hour 30 minuts </option>
+            <option value="8"> 8 hour</option>
+
+        </select>
+    </td>
+
+
+    <td colspan="1">
+        <button class="btn btn-white delete-added"><i class="fa fa-remove"></i> </button>
+    </td>
+
+</tr>

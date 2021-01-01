@@ -1,0 +1,87 @@
+{% extends 'layout/layout.html' %}
+{% load staticfiles custom_tags %}
+
+{% block content %}
+<div class="row">
+<div class="col-lg-12">
+	<div class="row wrapper border-bottom white-bg page-heading">
+    <div class="ibox">
+        <div class="ibox-title">
+            <h5>Manage Project Daily</h5>
+        </div>
+        {% include 'service/includes/_manage_project.html'%}
+    </div>
+	</div>
+	
+</div>
+</div>
+
+{% include 'service/includes/model_allot_hours_manage_project.html'%}
+
+{% endblock %}
+
+
+{% block js%} 
+
+<!-- Need to write Js -->
+
+<script type="text/javascript">
+$('body').on('hidden.bs.modal', '.modal', function () {
+    $(this).removeData('bs.modal');
+});
+
+$(function(){
+	$(document).on("click","#save", function(e){
+        var form = $("form");
+        $.ajax({
+            type: "POST",
+            url: form.attr( "action" ),
+            data: form.serialize(),
+            success: function(res){
+                if(res.success == 0){
+                    toastr.error(res.msg);
+                }else{
+                    $('#myModal .modal-dialog .modal-content').html(res);    
+                }
+                
+            }
+        });
+    });
+
+    $(document).on("click","#delete-allotment", function(e){
+        $('#is_delete').val('True');
+        var form = $("form");
+        $.ajax({
+            type: "POST",
+            url: form.attr( "action" ),
+            data: form.serialize(),
+            success: function(res){
+                $('#myModal .modal-dialog .modal-content').html(res);
+            }
+        });
+    });
+
+    $(document).on("click", "#btn-add_resources", function(e){
+    	$('#schedule-allotment-form').resetForm();
+        $('#is_update').val('False');
+        $('#delete-allotment').hide();
+        $('#manage-resources-panel').show();
+        $('#id_date, #id_alloted_to').removeAttr('readonly');
+    });
+
+    $(document).on("click", ".hrs-link", function(e){
+        $('#id_alloted_to').val($(this).data('user'));
+        $('#id_hours').val(parseInt($(this).data('hrs')));
+        $('#id_date, #date_to').val($(this).data('date'))
+        $('#id_date, #id_alloted_to').attr('readonly','readonly');
+        $('#is_update').val('True');
+        $('#delete-allotment').show();
+        $('#manage-resources-panel').show();
+    })
+
+    $(document).on("click", "#form-close", function(e){
+    	$('#manage-resources-panel').hide();	
+    })
+});
+</script>
+{% endblock %}

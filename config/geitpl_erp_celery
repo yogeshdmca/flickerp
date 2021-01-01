@@ -1,0 +1,21 @@
+#!/bin/bash
+NAME="geitpl_erp_celery"                                  # Name of the application
+DJANGODIR=/var/www/geitpl_erp
+USER=ubuntu                                        # the user to run as
+GROUP=ubuntu                                     # the group to run as
+DJANGO_SETTINGS_MODULE=geitpl_erp.settings.prod             # which settings file should Django use
+DJANGO_WSGI_MODULE=geitpl_erp.wsgi                     # WSGI module name
+
+
+# Activate the virtual environment
+
+cd $DJANGODIR
+source  /var/www/geitpl_erp/.env/bin/activate
+
+export DJANGO_SETTINGS_MODULE=$DJANGO_SETTINGS_MODULE
+export PYTHONPATH=$DJANGODIR:$PYTHONPATH
+
+# Start your Django Unicorn
+# Programs meant to be run under supervisor should not daemonize themselves (do not use --daemon)
+exec celery -A geitpl_erp worker -B --loglevel=info
+

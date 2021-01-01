@@ -1,0 +1,105 @@
+<div class="modal-header">
+    <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+    <div class="panel panel-success">
+        <div class="panel-heading">
+             Update Record
+        </div>
+    </div>
+</div>
+
+<div class="modal-body">
+
+    <div class="row">
+        <div class="col-sm-4 b-r">
+            <div class="form-group">
+                <label>Client Name</label>
+                <p>{{ object.firstname }}</p>
+            </div>
+            <div class="form-group">
+                <label>Phone Number</label>
+                <p>{{ object.phone_number }}</p>
+            </div>
+            <div class="form-group">
+                <label>Skype ID</label>
+                <p>{{ object.skype }}</p>
+            </div>
+            <div class="form-group">
+                <label>Email Address</label>
+                <p>{{ object.email }}</p>
+            </div>
+        </div>
+
+        <div class="col-sm-4">
+            <div class="form-group">
+                <label>Cpmany Name</label>
+                <p>{{ object.company_name }}</p>
+            </div>
+
+            <div class="form-group">
+                <label>Looking for hire </label>
+                <p>{{ object.country }}</p>
+            </div>
+            <div class="form-group">
+                <label>Current Sattus</label>
+                <p>{{ object.status }}</p>
+            </div>
+            <div class="form-group">
+                <label>Source of prospect</label>
+                <p>{{ object.source }}</p>
+            </div>
+        </div>
+        <div class="col-sm-4">
+            <div class="form-group">
+                <label>Project Description</label>
+                <p>{{ object.description }}</p>
+            </div> 
+
+            <div class="form-group">
+                <label>Last Updated</label>
+                <p>{{ object.modified_at }}</p>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="row">
+        <div class="table-responsive">
+            <table  class="table  table-striped" >
+                <thead>
+                    <tr>
+                        <th>Status</th>
+                        <th>Date</th>
+                        <th>Meeting Type</th>
+                        <th>Meeting Details</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for scheduler in object.scheduler.all %}
+                        <tr>
+                            <td>{{ scheduler.get_result_display }}</td>
+                            <td>{{ scheduler.call_schedule }}</td>
+                            <td>{{ scheduler.get_communication_type_display }}</td>
+                            <td>{{ scheduler.description|default_if_none:"" }}</td>
+
+
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+    </div>
+
+
+</div>
+
+<div class="modal-footer">
+    <button type="button" class="btn btn-white" data-dismiss="modal">Close</button>
+    <button type="button" class="btn btn-primary" id="sales-opportunity-update-btn-save">Save changes</button>
+</div>
+
+
+<script type="text/javascript">
+    $('#sales-opportunity-update-form').ajaxForm({success:prospectUpdateForm});
+</script>
+

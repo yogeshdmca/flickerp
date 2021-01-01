@@ -1,0 +1,25 @@
+<div class="btn-group hierarchy-select" data-resize="auto" id="user-select">
+    <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+        <span class="selected-label pull-left">&nbsp;</span>
+        <span class="caret"></span>
+        <span class="sr-only"></span>
+    </button>
+    <div class="dropdown-menu open">
+        <div class="hs-searchbox">
+            <input type="text" class="form-control" autocomplete="off">
+        </div>
+        <ul class="dropdown-menu inner" role="menu">
+
+            <li data-value="" data-level="1" data-default-selected="">
+                <a href="#">All Users</a>
+            </li>
+
+            {% for user in users %}
+            <li data-value="{{user.id}}" data-level="{{user.full_name}}">
+                <a href="#">{{user.full_name}}</a>
+            </li>
+            {% endfor %}
+        </ul>
+    </div>
+    <input class="hidden hidden-field" name="user" readonly="readonly" aria-hidden="true" type="text"/>
+</div>

@@ -1,0 +1,58 @@
+{% load staticfiles %}
+<div class="row border-bottom white-bg">
+    <nav class="navbar navbar-static-top navbar-fixed-top" role="navigation">
+        <div class="navbar-header">
+            <button aria-controls="navbar" aria-expanded="false" data-target="#navbar" data-toggle="collapse" class="navbar-toggle collapsed" type="button">
+            <i class="fa fa-reorder"></i>
+            </button>
+            <a href="{% url 'dashboard:dashboard' %}"><img src="{% static 'img/logo.png' %}" alt="GEITPL ERP"></a>
+        </div>
+        <div class="navbar-collapse collapse" id="navbar">
+            <ul class="nav navbar-nav top-header">
+                <li>
+                    <a href="{% url 'dashboard:dashboard' %}">Dashboard</a>
+                </li>
+                
+                {% if request.user.is_admin or request.user.department == '1' %}
+                {% include 'layout/menu/admin.html' %}
+                {% elif request.user.department in "'2', '5', '6', '7'" %}
+                {% include 'layout/menu/employee.html' %}
+                {% elif request.user.department == '3' %}
+                {% include 'layout/menu/sales.html' %}
+                {% elif request.user.department == '4' %}
+                {% include 'layout/menu/hr.html' %}
+                {% endif %}
+            </ul>
+            <ul class="nav navbar-nav navbar-right top-header">
+                <li class="dropdown">
+                    <a href="javascript:void(0);" class="dropdown-toggle" data-toggle="dropdown">
+                    {{ request.user.full_name|title }} <b class="caret"></b>
+                    </a>
+                    <ul class="dropdown-menu">
+                        <li>
+                            <a href="{% url 'user:profile' %}">View Profile</a>
+                        </li>
+                        <li class="divider"></li>
+                        <li>
+                            <a href="{% url 'user:change-password' %}">Change Password</a>
+                        </li>
+                        <li class="divider"></li>
+                        <li class="">
+                            <a href="/admin" target="_blank">Admin Portal</a>
+                        </li>
+                        <li class="divider"></li>
+                        {% if user.is_authenticated %}
+                        <li>
+                            <a href="{% url 'user:logout' %}">Log Out</a>
+                        </li>
+                        {% else %}
+                        <li>
+                            <a href="{% url 'user:login' %}">Sign In</a>
+                        </li>
+                        {% endif %}
+                    </ul>
+                </li>
+            </ul>
+        </div>
+    </nav>
+</div>

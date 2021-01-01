@@ -1,0 +1,33 @@
+{% for task_today  in task_todays %}
+
+
+<tr data-pk="{{task_today.pk}}">
+    <td colspan="1">
+        <h3>
+            <a href="#" class="text-navy">
+                {{task_today.category.get_type_display}}
+            </a>
+        </h3>
+    </td>
+
+    <td colspan="1">
+        <div>
+            <span>{{task_today.category.title}}</span>
+        </div>
+    </td>
+
+    <td colspan="1">
+    <span>{{task_today.get_suportive}}</span>
+    </td>
+
+    <td colspan="1">
+        <span>{{task_today.get_hours}}</span>
+    </td>
+
+
+    <td colspan="1">
+        <button class="btn btn-white delete"><i class="fa fa-remove"></i> </button>
+    </td>
+</tr>
+
+{% endfor %}

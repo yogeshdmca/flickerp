@@ -1,0 +1,122 @@
+{% extends 'layout/layout.html' %}
+{% load staticfiles %}
+{% load i18n %}
+{% load widget_tweaks %}
+{% load custom_user_tag %}
+
+{% block title %}{% trans 'Create Contract' %}{% endblock %}
+
+{% block content %}
+    <div class="wrapper wrapper-content animated fadeInRight">
+        <form autocomplete="off" method="post" role="form">
+            {% csrf_token %}
+            <!-- User Information Block -->
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="ibox float-e-margins">
+                        <div class="ibox-title">
+                            <h5>Contract Information</h5>
+                            <div class="ibox-tools">
+                                <a class="collapse-link">
+                                    <i class="fa fa-chevron-up"></i>
+                                </a>
+                            </div>
+                        </div>
+                        <div class="ibox-content">
+                            <div class="row">
+                                {% for field in form %}
+
+                            <div class="form-group col-lg-6">
+                                    <label class="col-sm-6 control-label">{{ field.label }}</label>
+                                    <div class="col-sm-6">
+                                    {{ field|add_class:"form-control"|attr:"required:true" }}
+                                    {{ form.basic_salary.errors }}
+                                    </div>
+                            </div>
+                            {% endfor %}
+
+<!--                                 <div class="form-group col-lg-6">
+                                    <label class="col-sm-6 control-label">User Name</label>
+                                   {% user_hierarchy_select %}
+                                </div>
+                                <div class="form-group col-lg-6">
+                                    <label class="col-sm-6 control-label">Basic Salary</label>
+                                    <div class="col-sm-6">{{ form.basic_salary|add_class:"form-control"|attr:"required:true" }}
+                                    {{ form.basic_salary.errors }}</div>
+                                </div>
+                                <div class="form-group col-lg-6">
+                                    <label class="col-sm-6 control-label">Home Allowance</label>
+                                    <div class="col-sm-6">{{ form.home_allowance|add_class:"form-control"|attr:"required:true" }}
+                                    {{ form.home_allowance.errors }}</div>
+                                </div>
+                                <div class="form-group col-lg-6">
+                                    <label class="col-sm-6 control-label">Conveyance Allowance</label>
+                                    <div class="col-sm-6">{{ form.conveyance_allowance|add_class:"form-control" }}
+                                    {{ form.conveyance_allowance.errors }}</div>
+                                </div>
+                                <div class="form-group col-lg-6">
+                                    <label class="col-sm-6 control-label">Professional Tax</label>
+                                    <div class="col-sm-6">{{ form.professional_tax|add_class:"form-control"|attr:"required:true" }}
+                                    {{ form.professional_tax.errors }}</div>
+                                </div>
+                                <div class="form-group col-lg-6">
+                                    <label class="col-sm-6 control-label">Medical Insurance</label>
+                                    <div class="col-sm-6">{{ form.medical_insurance|add_class:"form-control"|attr:"required:true" }}
+                                    {{ form.medical_insurance.errors }}</div>
+                                </div>           
+                                <div class="form-group col-lg-6">
+                                    <label class="col-sm-6 control-label">TDS</label>
+                                    <div class="col-sm-6">{{ form.tds|add_class:"form-control"|attr:"required:true" }}
+                                    {{ form.tds.errors }}</div>
+                                </div>
+                                <div class="form-group col-lg-6">
+                                    <label class="col-sm-6 control-label">Provident Fund</label>
+                                    <div class="col-sm-6">{{ form.provident_fund|add_class:"form-control"|attr:"required:true" }}
+                                    {{ form.provident_fund.errors }}</div>
+                                </div>
+                                <div class="form-group col-lg-6">
+                                    <label class="col-sm-6 control-label">Designation</label>
+                                    <div class="col-sm-6">{{ form.designation|add_class:"form-control"|attr:"required:true" }}
+                                    {{ form.expiry_date.errors }}</div>
+                                </div>
+                                <div class="form-group col-lg-6">
+                                    <label class="col-sm-6 control-label">Expiry Date</label>
+                                    <div class="col-sm-6">{{ form.expiry_date|add_class:"form-control datePicker"|attr:"required:true" }}
+                                    {{ form.expiry_date.errors }}</div>
+                                </div> -->
+                                
+
+
+
+
+
+
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Block End's -->
+
+
+            <!-- Submit Button -->
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="ibox float-e-margins">
+                        <div class="ibox-content">
+                            <button type="submit" class="btn btn-primary center-block">Submit</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Block End's -->
+        </form>
+    </div>
+{% endblock %}
+{% block script %}
+    {{ block.super }}
+<script type="text/javascript">
+    
+</script>
+{% endblock %}

@@ -1,0 +1,349 @@
+{% extends 'layout/layout.html' %}
+{% load staticfiles %}
+{% load i18n %}
+{% load widget_tweaks %}
+
+{% block title %}{% trans 'Approve Leave' %}{% endblock %}
+
+{% block content %}
+<div class="wrapper wrapper-content animated fadeInRight">
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="ibox float-e-margins">
+                <div class="ibox-title">
+                    <h5>Approve Leave</h5>
+                    <div class="ibox-tools">
+                        <a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+                    </div>
+                </div>
+                
+                <div class="ibox-content">
+                    <div class="row">
+                        <form id="month-select">
+                            <div class="col-md-6">
+                                <select class="form-control" name="month" id="month">
+                                    {% for month in month_dict %}
+                                        <option value="{{ month.id }}">{{month.month_name}}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            <div class="col-md-5">
+                                <select class="form-control" name="year" id="year">
+                                    {% for year in year_dict %}
+                                        <option value="{{ year.id }}">{{ year.year }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+
+                            <div class="col-md-1">
+                                <input id="submit_button" type="button" class="btn btn-primary" value="submit">
+                            </div>
+                        </form>
+                    </div>
+                </div> 
+                <div class="ibox-content">
+                    <div class="row m-t-sm">
+                        <div class="col-lg-12">
+                            <div class="panel blank-panel">
+                                <div class="panel-heading">
+                                    <div class="panel-options">
+                                        <ul class="nav nav-tabs">
+                                            <li class="active"><a href="#tab-1" data-toggle="tab">Supervisors Approval</a></li>
+                                            <li class=""><a href="#tab-2" data-toggle="tab">Management Approval</a></li>
+                                            <li class=""><a href="#tab-3" data-toggle="tab">Not Approved by Supervisors</a></li>
+                                        </ul>
+                                    </div>
+                                </div>
+                                <div class="panel-body">
+                                    <div class="tab-content">
+                                        <div class="tab-pane active" id="tab-1">
+                                            <div class="feed-activity-list">
+                                                <div class="feed-element">
+                                                    <div class="media-body ">
+                                                        <div class="table-responsive">
+                                                            <table style="width:100%;" class="table users_object_listing table-striped table-bordered table-hover" >
+                                                                <thead>
+                                                                    <tr>
+                                                                        <th>Employee Name</th>
+                                                                        <th>TL</th>
+                                                                        <th>Date</th>
+                                                                        <th>Type</th>
+                                                                        <th>Description</th>
+                                                                        <th>Leave for</th>
+                                                                        <th>Requested Date</th>
+                                                                        <th>Status</th>
+                                                                    </tr>
+                                                                </thead>
+                                                                <tbody>
+                                                                    {% for object in leaves_supervisor %}
+                                                                        {% if object.user.is_active %}
+                                                                            <tr>
+                                                                                <td style="width:15%;">{{ object.user.full_name }}</td>
+                                                                                <td style="width:15%;">{{ object.get_supervisor.get_full_name }}</td>
+                                                                                <td style="width:10%;">{{ object.date }}{% if object.end_date %} - {{object.end_date}} {% endif %} </td>
+                                                                                <td style="width:5%;">{{ object.get_type_display }}</td>
+                                                                                <td style="width:40%;">{{ object.description }}</td>
+                                                                                <td style="width:10%;" class="text-{{ object.get_status_color}}">{{ object.get_leave_for_display}} {% if object.time %}(From {{ object.time }}){% endif %}</td>
+                                                                                <td style="width:5%;">{{object.request_date}}</td>
+                                                                                <td style="width:20%;">
+                                                                                    {% if object.supervisor_approval == '0' %}
+                                                                                        <a data-user_type="supervisor" data-url="{% url 'attendance:get-leave' %}"  data-leave_id="{{ object.id }}" name="supervisor_approval" class="show_leave">{{ object.get_supervisor_approval_display }}</a>    
+                                                                                    {% elif object.supervisor_approval == '1' %}
+                                                                                        {{ object.get_management_approval_display }}
+                                                                                    {% else %}
+                                                                                        {{ object.get_supervisor_approval_display }} ({{ object.get_reject_type_display }})
+                                                                                    {% endif %}
+                                                                                </td>
+                                                                            </tr>
+                                                                        {% endif %}    
+                                                                    {% endfor %}
+                                                                </tbody>
+                                                                <tfoot>
+                                                                    <tr>
+                                                                        <th>Employee Name</th>
+                                                                        <th>TL</th>
+                                                                        <th>Date</th>
+                                                                        <th>Type</th>
+                                                                        <th>Description</th>
+                                                                        <th>Leave for</th>
+                                                                        <th>Requested date</th>
+                                                                        <th>Status</th>
+                                                                    </tr>
+                                                                </tfoot>
+                                                            </table>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="tab-pane" id="tab-2">
+                                            <div class="feed-activity-list">
+                                                <div class="feed-element">
+                                                    <div class="media-body ">
+                                                        {% csrf_token %}
+                                                        <button class="btn btn-primary btn-approve" data-url="{% url "attendance:update-leave-bulk" %}" data-type="approve_all">Approve All</button>
+                                                        <button class="btn btn-primary btn-approve" data-url="{% url "attendance:update-leave-bulk" %}" data-type="reject_all">Reject All</button>
+                                                        <div class="table-responsive">
+                                                            <table style="width:100%;" class="table users_object_listing table-striped table-bordered table-hover" >
+                                                                <thead>
+                                                                    <tr>
+                                                                        <th><input type="checkbox" id="check_all"></th>
+                                                                        <th>Employee Name</th>
+                                                                        <th>TL</th>
+                                                                        <th>Date</th>
+                                                                        <th>Type</th>
+                                                                        <th>Description</th>
+                                                                        <th>Leave for</th>
+                                                                        <th>Requested Date</th>
+                                                                        <th>Status</th>
+                                                                    </tr>
+                                                                </thead>
+                                                                <tbody>
+                                                                    {% for object in leaves_management %}
+                                                                        {% if object.user.is_active and object.supervisor_approval != '0' %}
+                                                                            <tr>
+                                                                                <td><input type="checkbox" data-leave_id={{ object.id }} class="leave_checkbox"></td>
+                                                                                <td style="width:15%;">{{ object.user.full_name }}</td>
+                                                                                <td style="width:15%;">{{ object.get_supervisor.get_full_name }}</td>
+                                                                                <td style="width:10%;">{{ object.date }}{% if object.end_date %} - {{object.end_date}} {% endif %} </td>
+                                                                                <td style="width:5%;">{{ object.get_type_display }}</td>
+                                                                                <td style="width:40%;">{{ object.description }}</td>
+                                                                                <td style="width:10%;" class="text-{{ object.get_status_color}}">{{ object.get_leave_for_display}} {% if object.time %}(From {{ object.time }}){% endif %}</td>
+                                                                                <td style="width:5%;">{{object.request_date}}</td>
+                                                                                
+                                                                                <td style="width:20%;">
+                                                                                    {% if object.supervisor_approval == '1' and  request.user.department == '1' or request.user.department == '4' %}
+                                                                                        <a data-user_type="management" data-url="{% url 'attendance:get-leave' %}"  data-leave_id="{{ object.id }}" name="management_approval" class="show_leave">{{ object.get_management_approval_display }}</a>
+                                                                                    {% elif object.supervisor_approval == '2' or object.supervisor_approval == '3' %}
+                                                                                        {{ object.get_supervisor_approval_display }} ({{ object.get_reject_type_display }})
+                                                                                    {% endif %}
+                                                                                </td>
+                                                                            </tr>
+                                                                        {% endif %}    
+                                                                    {% endfor %}
+                                                                </tbody>
+                                                                <tfoot>
+                                                                    <tr>
+                                                                        <th></th>
+                                                                        <th>Employee Name</th>
+                                                                        <th>TL</th>
+                                                                        <th>Date</th>
+                                                                        <th>Type</th>
+                                                                        <th>Description</th>
+                                                                        <th>Leave for</th>
+                                                                        <th>Requested Date</th>
+                                                                        <th>Status</th>
+                                                                    </tr>
+                                                                </tfoot>
+                                                            </table>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="tab-pane" id="tab-3">
+                                            <div class="feed-activity-list">
+                                                <div class="feed-element">
+                                                    <div class="media-body ">
+                                                        <div class="table-responsive">
+                                                            <table style="width:100%;" class="table users_object_listing table-striped table-bordered table-hover" >
+                                                                <thead>
+                                                                    <tr>
+                                                                        <th>Employee Name</th>
+                                                                        <th>TL</th>
+                                                                        <th>Date</th>
+                                                                        <th>Type</th>
+                                                                        <th>Description</th>
+                                                                        <th>Leave for</th>
+                                                                        <th>Requested Date</th>
+                                                                        <th>Status</th>
+                                                                    </tr>
+                                                                </thead>
+                                                                <tbody>
+                                                                    {% for object in leaves_management %}
+                                                                        {% if object.user.is_active and object.supervisor_approval == '0' %}
+                                                                            <tr>
+                                                                                <td style="width:15%;">{{ object.user.full_name }}</td>
+                                                                                <td style="width:15%;">{{ object.get_supervisor.get_full_name }}</td>
+                                                                                <td style="width:10%;">{{ object.date }}{% if object.end_date %} - {{object.end_date}} {% endif %} </td>
+                                                                                <td style="width:5%;">{{ object.get_type_display }}</td>
+                                                                                <td style="width:40%;">{{ object.description }}</td>
+                                                                                <td style="width:10%;" class="text-{{ object.get_status_color}}">{{ object.get_leave_for_display}} {% if object.time %}(From {{ object.time }}){% endif %}</td>
+                                                                                <td style="width:5%;">{{object.request_date}}</td>
+                                                                                <td style="width:15%;">
+                                                                                {% if object.supervisor_approval == '2' or object.supervisor_approval == '3' %}
+                                                                                        {{ object.get_supervisor_approval_display }} ({{ object.get_reject_type_display }})
+                                                                                {% else %} 
+                                                                                    {{ object.get_supervisor_approval_display }}
+                                                                                {% endif %}
+                                                                                </td>
+                                                                            </tr>
+                                                                        {% endif %}    
+                                                                    {% endfor %}
+                                                                </tbody>
+                                                                <tfoot>
+                                                                    <tr>
+                                                                        <th>Employee Name</th>
+                                                                        <th>TL</th>
+                                                                        <th>Date</th>
+                                                                        <th>Type</th>
+                                                                        <th>Description</th>
+                                                                        <th>Leave for</th>
+                                                                        <th>Requested date</th>
+                                                                        <th>Status</th>
+                                                                    </tr>
+                                                                </tfoot>
+                                                            </table>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Modal -->
+<div id="leave-show-modal" class="modal fade"  aria-hidden="true" >
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content animated bounceInRight">
+            <div class="modal-body">
+
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+{% block script %}
+{{ block.super }}
+
+<script type="text/javascript">
+var leaveReason = {
+    success:leaveApproveReason
+}
+function leaveApproveReason(responseText, statusText, xhr, $form){
+    location.reload();
+}
+    $(function(){
+        $('#check_all').click(function () {    
+            $('input:checkbox').prop('checked', this.checked);    
+        });
+
+        $('.btn-approve').click(function(){
+            leave_array = [];
+            url = $(this).data('url');
+            action_type = $(this).data('type');
+            csrfmiddlewaretoken = $("[name=csrfmiddlewaretoken]").val();
+            $('.leave_checkbox').each(function(count, element){
+                if($(element).prop('checked')){
+                    leave_array.push($(element).data('leave_id'));
+                }
+            });
+            if (leave_array.length > 0){
+                $.post(url, {'action_type':action_type, 'leaves':leave_array, 'csrfmiddlewaretoken':csrfmiddlewaretoken}, function(response){
+                    location.reload();
+                });
+            }
+        });
+
+        $('.show_leave').click(function(e){
+            e.preventDefault();
+            url = $(this).data('url');
+            user_type = $(this).data('user_type')
+            leave_id = $(this).data('leave_id');
+            $.get(url, {'leave_id':leave_id, 'user_type':user_type}, function(response){
+                $('#leave-show-modal .modal-body').html($.parseHTML(response));
+                $('#leave-show-modal').modal();
+                $('#id_leave_cancel_block').hide();
+                $('#id_leave_status_form').ajaxForm(leaveReason);
+            });
+        });
+        
+        $(document).on('change', '#id_leave_status', function(){
+            var value = $(this).find(":selected").val();
+            if(value == '1'){
+                    $('#id_leave_cancel_block').hide();
+                    }
+                else if(value == '2'){
+                    $('#id_leave_cancel_block').show();
+                }
+        });
+        
+    });
+</script>
+<script type="text/javascript">
+
+    $( "input#submit_button" ).click(function() {
+        $("#month-select").submit()
+    })
+
+    function getSearchParams(k){
+         var p={};
+         location.search.replace(/[?&]+([^=&]+)=([^&]*)/gi,function(s,k,v){p[k]=v})
+         return k?p[k]:p;
+    }
+    
+    var month = getSearchParams('month')
+    if (month){
+        $("select#month").val(month)
+    }else{
+        $("select#month").val({{month}})
+    }
+
+    var year = getSearchParams('year')
+    if (year){
+        $("select#year").val(year)
+    }else{
+        $("select#year").val({{year}})
+    }
+</script>
+
+{% endblock %}

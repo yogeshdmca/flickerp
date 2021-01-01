@@ -1,0 +1,128 @@
+{% load widget_tweaks %}
+    <div class="modal-header">
+        <h3>Internal service allotment</h3>
+    </div>
+    <div class="modal-body">
+        <form autocomplete="off" method="post" role="form" class="form-horizontal" id="add_otp_service">
+            {% csrf_token %}
+            <input type="hidden" name="service_id" value="{{services.id}}">
+            <div class="row">
+                <div class="form-group">
+                    <label class="col-lg-3 control-label">User</label>
+                    <div class="col-lg-9">
+                        <select class="form-control required" name="tl">
+                        	<option value="">Select TL:</option>
+                        	{% for tl in tls %}
+                        		<option value="{{tl.id}}">{{tl.full_name}}</option>
+                        	{% endfor %}
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-group leave_for">
+
+                    <label class="col-lg-3 control-label">Hours</label>
+                    <div class="col-lg-9">
+                    	<span class="help-block">Total Available hours: {{ services.get_hours }}</span>
+                    	<input type="number" name="hours" class="form-control required date" id="id_hours">
+                    </div>
+                </div>
+                
+                <div class="form-group start_date">
+                    <label class="col-lg-3 control-label">Start Date:</label>
+                    <div class="col-lg-9">
+                        <input type="text" name="start_date" class="form-control required date" id="id_date">
+                    </div>
+                </div>
+
+
+                <div class="form-group end_date">
+                    <label class="col-lg-3 control-label">End Date:</label>
+                    <div class="col-lg-9">
+                    <input type="text" name="end_date" class="form-control required" id="id_end_date">
+                    </div>
+                </div>
+
+                <div class="form-group description">
+                    <label class="col-lg-3 control-label required">Description:</label>
+                    <div class="col-lg-9">
+                    	<textarea name="description"></textarea>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+
+<div class="modal-footer">
+    <button type="button" class="btn btn-white" data-dismiss="modal">Close</button>
+    <button type="button" class="btn btn-primary" id="add_records">Add</button>
+</div>
+
+
+
+<script type="text/javascript">
+$("#id_date").datepicker({
+        startDate: new Date(),
+        autoclose: true,
+        clearBtn : true,
+        todayBtn : true,
+        todayHighlight : true,
+        daysOfWeekDisabled: '0',
+        dateFormat: 'yyyy-mm-dd'
+    })
+
+
+$("#id_end_date").datepicker({
+        startDate: new Date(),
+        autoclose: true,
+        clearBtn : true,
+        todayBtn : true,
+        todayHighlight : true,
+        daysOfWeekDisabled: '0',
+        dateFormat: 'yyyy-mm-dd'
+    })
+
+
+$("#id_hours").on('change  paste', function() {
+    var val = $(this).val()
+    if (val> {{ services.get_hours }}){
+    	alert("added hours is more than available hours")
+    	$(this).val('')
+    }
+});
+
+function validateForm() {
+  var isValid = true;
+  $('#add_otp_service .form-control').each(function() {
+    if ( $(this).val() === '' )
+        isValid = false;
+  });
+  return isValid;
+}
+
+
+$(document).on("click","#add_records", function(){
+    var form = $("#add_otp_service");
+    var url = "{% url 'service:supervisor-service-otp' services.id %}"
+    debugger
+    if (validateForm()){
+	    $.ajax({
+	           type: "POST",
+	           url: url,
+	           data: form.serialize(),
+	           success: function(data)
+	           {
+	              if (data.status==200){
+	              	//$("button.btn.btn-white").click()
+	              	location.reload()
+	              }else{
+	              	alert(data.data)
+	              }
+	           }
+	         });
+    }else{
+    	alert("form is not valid")
+    }
+})
+
+</script>

@@ -1,0 +1,49 @@
+
+<li>
+    <a aria-expanded="false" role="button" href="#" class="dropdown-toggle" data-toggle="dropdown">Users&nbsp;<span class="caret"></span></a>
+    <ul class="dropdown-menu">
+        <li>
+            <a href="{% url 'user:employee-users' %}">User List</a>
+        </li>
+    </ul>
+</li>
+<li>
+    <a aria-expanded="false" role="button" href="#" class="dropdown-toggle" data-toggle="dropdown">Sales&nbsp;<span class="caret"></span></a>
+    <ul class="dropdown-menu">
+        <li>
+            <a href="{% url 'opportunity:sales-opportunities' %}">Opportunity List</a>
+        </li>
+        <li>
+            <a href="{% url 'opportunity:sales-leads' %}">Lead List</a>
+        </li>
+
+        <li>
+            <a href="{% url 'support:employee-portfolio-list' %}">Portfolio</a>
+        </li>
+
+        
+    </ul>
+</li>
+<li>
+    <a aria-expanded="false" role="button" href="#" class="dropdown-toggle" data-toggle="dropdown">Employee&nbsp;<span class="caret"></span></a>
+    <ul class="dropdown-menu">
+        <li>
+            <a href="{% url 'user:profile' %}">My Profile</a>
+        </li> 
+        <li>
+            <a href="{% url 'attendance:sales-attendance-list' %}">Attendance</a>
+        </li>
+        <li>
+            <a href="{% url 'attendance:sales-leave' %}">My Leaves</a>
+        </li>
+        {% if request.user.childs.all %}
+        <li>
+            <a href="{% url 'attendance:sales-approve-leave' %}">Approve Leave</a>
+        </li>
+        {% endif %}
+        <li>
+            <a href="{% url 'attendance:sales-holiday-list' %}">Holidays</a>
+        </li>
+
+    </ul>
+</li>

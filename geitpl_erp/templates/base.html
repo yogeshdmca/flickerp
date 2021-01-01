@@ -1,0 +1,43 @@
+{% load i18n staticfiles %}
+
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="icon" href="{% static 'img/favicon.png' %}">
+
+        <title>GEITPL ERP</title>
+        {% block stylesheet %}{% endblock %}
+
+        {% block extrastyle %}{% endblock %}
+
+        {% block extrahead %}{% endblock %}
+    </head>
+
+    <body class="top-navigation  pace-done">
+        <div id="wrapper">
+        <div id="page-wrapper" class="gray-bg">
+        {% block header %}{% endblock %}
+        
+        <div class="wrapper wrapper-content">
+        <div id="container">
+            {% block breadcrumbs %}{% endblock %}
+
+            <div class="row">
+                {% block messages %}{% endblock messages %}
+            </div>
+
+            <div id="wrapper">
+                {% block content %}{% endblock %}
+            </div>
+        </div>
+        </div>
+
+        {% block footer %}{% endblock %}
+        </div>
+        </div>
+    </body>
+    {% block script %}{% endblock %}
+</html>

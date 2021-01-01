@@ -1,0 +1,9 @@
+<tr>
+    {% if user.is_active %}
+        <td>{{ user.full_name }}</td>
+        <td>{{ total_working_days }}</td>
+        <td>{{ total_present_days }}</td>
+        <td>{{ leave }}</td>
+        <td>{{ short_hours }}</td>
+    {% endif %}
+</tr>

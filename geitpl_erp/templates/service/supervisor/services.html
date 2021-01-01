@@ -1,0 +1,110 @@
+{% extends 'layout/layout.html' %}
+{% load staticfiles custom_tags %}
+
+{% block content %}
+<div class="row">
+<div class="col-lg-12">
+<div class="wrapper wrapper-content animated fadeInUp">
+
+    <div class="ibox gray-bg">
+        <div class="ibox-title">
+            <h5>Service Listing</h5>
+        </div>
+        <div class="ibox-content">
+            <div class="tabs-container">
+                <ul class="nav nav-tabs">
+                    {% for key, value in SERVICE_STATUS %}
+                    <li class="{% if forloop.first %} active{% endif %}"><a data-toggle="tab" href="#{{key}}"> {{value|upper}} ({% with service=services|get_item_count:key %} {{ service.count }} {% endwith%} )</a>
+                    </li>
+                    {% endfor %}
+                </ul>
+                <div class="tab-content">
+                    {% for key, value in SERVICE_STATUS %}
+                    <div id="{{key}}" class="tab-pane {% if forloop.first %} active{% endif %}">
+                    <div class="ibox-content">
+                    <div class="project-list">
+                        <table class="table table-hover table table-stripped default">
+                            <tbody>
+                            {% for service in services|get_item_count:key %}
+                            <tr class="{{service.get_service_expire_colore}}">
+                                <td class="project-title">
+                                    <a href="javascript:valid(0);">{{ service.title|upper }}</a>
+                                    <br/>
+                                    <small>TL: {% if service.parent %} {{ service.parent.assigned_to.full_name }} /{% endif %} {{ service.assigned_to.full_name }}</small>
+                                    <br/>
+                                    <small>BD: {{ service.manager.full_name }}</small>
+                                </td>
+
+                                <td class="project-title {% if service.type == 'freetask' %}text-warning{% endif %}">
+                                    <a href="javascript:valid(0)">TYPE:{{ service.get_type_display|title }}</a>
+                                    <br/>
+                                    <small>Alloted Hours : {{ service.get_hours }} Hours</small>
+                                
+                                </td>
+
+                                <td class="project-completion">
+                                    <small>Start Date: {{ service.start_date }}</small>
+                                    <br/>
+                                    <small>End Date: {{ service.end_date }}</small>
+                                </td>
+
+                                <td>
+                                    <a data-toggle="modal" href="{% url 'service:supervisor-service-details' service.id %}" data-target="#serviceDetails"><i class="fa fa-bars" aria-hidden="true"></i></a>
+                                </td>
+                                {% if service.parent.assigned_to != user %}
+                                <td>
+                                    <a data-toggle="modal" href="{% url 'service:supervisor-service-otp' service.id %}" data-target="#serviceOTP" ><i class="fa fa-user" aria-hidden="true"></i> </a>
+                                    </td>
+                                {% else %}
+                                 <td>
+                                    <a href="javascript:void(0);"></a>
+                                </td>
+
+                                {% endif %}
+                            </tr>
+                            {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+
+
+    </div>
+</div>
+</div>
+</div>
+
+
+
+<div class="modal inmodal" id="serviceDetails" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+    </div>
+    </div>
+</div>
+
+<div class="modal inmodal" id="serviceOTP" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-sm">
+    <div class="modal-content">
+    </div>
+    </div>
+</div>
+
+
+{% endblock %}
+
+
+{% block js%} 
+
+<script type="text/javascript">
+$('body').on('hidden.bs.modal', '.modal', function () {
+    $(this).removeData('bs.modal');
+});
+
+</script>
+{% endblock js%}

@@ -1,0 +1,30 @@
+<div class="table-responsive"><h3>Details of {{ detailed_logs.first.attendance_log.date }}</h3>
+    <table style="width:100%;" id="att_detailed_logs" class="table object_listing table-striped table-bordered table-hover" >
+        <thead>
+            <tr>
+                <th>In Time</th>
+                <th>Out Time</th>
+                <th>Duration</th>
+                <th>Option</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for logs in detailed_logs %}
+                <tr style="background-color:{% if logs.type == 'in' %}#1ab394; color:white;{% elif logs.type == 'out' %}white{% elif logs.type == 'miss_punch' %}#ed5565; color:white;{% endif %}">
+                    <td>{{ logs.in_time }}</td>
+                    <td>{{ logs.out_time }}</td>
+                    <td>{{ logs.duration }}</td>
+                    <td>
+                        {% if logs.type == 'out' or logs.type == 'miss_punch' %}
+                            {% if logs.comment %}{{ logs.comment }}{% else %}<a class="form_editable_class add-comment" data-pk="{{ logs.id }}" data-url="{% url 'attendance:add-comment-out-punch' %}" data-params="{ csrfmiddlewaretoken:'{{ csrf_token }}'}" data-type="text">{% endif %}</a>
+                        {% endif %}
+                    </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+        
+    </table>
+    <div id="miss-punch" data-url="{% url 'attendance:add-miss-punch' detailed_logs.first.attendance_log.id %}" >
+        
+    </div>
+</div>

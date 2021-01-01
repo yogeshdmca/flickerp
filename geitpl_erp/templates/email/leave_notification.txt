@@ -1,0 +1,11 @@
+Leave Requrest from {{user.full_name}}
+
+Date : {{leave.date}}
+
+Status : {{leave.get_status_display}}
+
+Leave For  :  {{leave.get_leave_count_display}}
+
+Leave Category : {{leave.category.get_type_display}}
+
+Details: {{leave.description}}
