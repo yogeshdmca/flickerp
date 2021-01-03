@@ -7,9 +7,14 @@ from celery.utils.log import get_task_logger
 from django.core.mail import EmailMultiAlternatives
 from django.template import Context
 from django.template.loader import render_to_string
-
+from django.conf import  settings
 from attendance import views
 from attendance.models import Leave
+
+import os
+from slack_sdk import WebClient
+from slack_sdk.errors import SlackApiError
+
 
 logger = get_task_logger(__name__)
 
@@ -33,13 +38,26 @@ def delete_pending_rating_records():
     TlFeedback().delete_pending()
 
 
+def send_masage_in_slack(leave):
+    client = WebClient(token=settings.SLACK_BOT_TOKEN)
+    try:
+        text_content = render_to_string('email/leave_notification.txt', {'leave': leave,'user':leave.user})
+        response = client.chat_postMessage(channel='#announcement', text=text_content)
+    except SlackApiError as e:
+        assert e.response["ok"] is False
+        assert e.response["error"]  # str like 'invalid_auth', 'channel_not_found'
+        print(f"Got an error: {e.response['error']}")
+
+
+
 @shared_task
 def new_leave_email_notification(leave):
     # leave = Leave.objects.get(date=date, user=user)
-    text_content = render_to_string('email/leave_notification.txt', {'leave': leave,'user':user})
-    html_content = render_to_string('email/leave_notification.html', {'leave': leave,'user':user})
+    text_content = render_to_string('email/leave_notification.txt', {'leave': leave,'user':leave.user})
+    html_content = render_to_string('email/leave_notification.html', {'leave': leave,'user':leave.user})
     subject = "New Leave application"
-    to = [user.email, user.parent.email]
+    to = [leave.user.email, leave.user.parent.email]
+    send_masage_in_slack(leave)
     send_email(subject,to,text_content,html_content)
 
 

@@ -159,7 +159,6 @@ class CustomUser(AbstractBaseUser, PermissionsMixin, UserObjectManager):
     notice_period = models.CharField(max_length=250, null=True, blank=True)
     designation = models.CharField(
         max_length=100, choices=designation_choice, null=True, blank=True)
-    # password_date = models.DateField(null=True, blank=True)
 
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = []

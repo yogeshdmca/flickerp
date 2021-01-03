@@ -10,11 +10,7 @@ class Year(models.Model):
 
     def __str__(self):
         return str(self.start)
-
-    # def save(save,*args, **kwargs):
-    #     self.year=self.start.year
-    #     return super().save(*args, **kwargs)
-
+        
 
 class FiscalYear(models.Model):
     start = models.DateField("Start Date")

@@ -45,30 +45,13 @@ class LoginMiddleware(object):
                 return None
 
         if request.user.is_authenticated():
-            print(request.role, request.path)
-            
-            # Password change every month
-            # if not request.user.password_date or (date.today() - request.user.password_date) > timedelta(days=30):
-            #     print "dfffffffffffffffffffffffffffffffffffff"
-            #     return redirect("user:change-password")
-            
-            # Leave not approve till 1st of month
+        
             if request.role == 'admin':
                 redirect_url = '/administration/leave/approve/'
                 redirect_to = "attendance:approve-leave"
             else:
                 redirect_url = '/development/leave/approve/'
                 redirect_to = "attendance:development-approve-leave"
-#            if request.user.leave_approve > 0 and date.today() == date.today().replace(day=1) and request.path != redirect_url:
- #               return redirect(redirect_to)
-
-            # Timsheet not fill continue 3 days
-            # if request.role != 'admin' and request.role != 'humanresource' and request.user.filled_by.last():
-            #     if date.today() - request.user.filled_by.last().date > date.today().replace(day=6) - date.today().replace(day=3) and request.path != '/employee/timehseet/':
-            #         if request.path == '/employee/fill_timesheet/' or request.path == '/employee/get_timesheet_type_line/' or request.path ==  '/employee/get_timesheet_category_type/' or request.path ==  '/employee/get_timesheet_sub_category_type/' or request.path ==  '/employee/add_new_timesheet_record/':
-            #             return None
-            #         else:
-            #             return redirect('service:timehseet')
 
             if re.compile(r'/administration/(.*)$').match(request.path) and request.role == 'admin':
                 return None

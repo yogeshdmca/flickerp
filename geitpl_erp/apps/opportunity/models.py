@@ -81,18 +81,10 @@ class Client(models.Model):
     skype = models.CharField(max_length=50, null=True, blank=True)
     linkedin = models.CharField(max_length=200, null=True, blank=True)
     country = models.ForeignKey(Country, related_name='clients',null=True, blank=True)
-    
-    #created_by = models.ForeignKey(settings.AUTH_USER_MODEL, related_name="client_created_by", verbose_name="Created By")
-    #modified_by = models.ForeignKey(settings.AUTH_USER_MODEL, related_name="client_modified_by", verbose_name="Created By")
-    #created_at = models.DateTimeField(auto_now_add=True)
-    #modified_at = models.DateTimeField(auto_now=True)
-
     def __str__(self):
         return self.client_name or ''
 
 
-
-            
 class CreatedandByBaseAbstract(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     modified_at = models.DateTimeField(auto_now=True)

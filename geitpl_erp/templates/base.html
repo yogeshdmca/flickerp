@@ -1,6 +1,7 @@
 {% load i18n staticfiles %}
 
 <!DOCTYPE html>
+{% load config_tag %}
 <html>
     <head>
         <meta charset="utf-8">
@@ -8,7 +9,7 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <link rel="icon" href="{% static 'img/favicon.png' %}">
 
-        <title>GEITPL ERP</title>
+        <title>{% site_name %}</title>
         {% block stylesheet %}{% endblock %}
 
         {% block extrastyle %}{% endblock %}

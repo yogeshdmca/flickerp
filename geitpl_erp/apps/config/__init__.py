@@ -1,5 +1,13 @@
 from datetime import datetime, date, time, timedelta
 
+
+FEATURES = (
+        ('sales',"Lead and opportunity"),
+        ('service',"Timesheet and Services"),
+    )
+
+
+
 TIME_LIST  = [(datetime(2018,2,2,11,30)+timedelta(minutes=30*t)).time() for t in range(1, 21) ]
 
 TIME_SELECT = [(t, t.strftime("%H:%M %p"))for t in TIME_LIST]
